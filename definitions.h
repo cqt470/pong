@@ -20,6 +20,7 @@ class Player{
 
     // false = sinistra
     // true = destra
+    // vedi -> https://stackoverflow.com/questions/6576109/
     Player(bool side, Adafruit_SSD1306& disp): display(disp){
       this->side = side;
       this->position = (int) DISPLAY_H / 2; // lo mette in mezzo allo schermo type shi
