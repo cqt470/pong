@@ -10,12 +10,28 @@
 #define BAR_WIDTH             2
 
 class Player{
+  private:
+    // senza & non funziona, perché crea una copia e non un riferimento (pointer type shi yk)
+    Adafruit_SSD1306& display;
+
   public:
+    bool side;
+    int position;
+
     // false = sinistra
     // true = destra
-    Player(bool position){
-      // codice
+    Player(bool side, Adafruit_SSD1306& disp): display(disp){
+      this->side = side;
+      this->position = (int) DISPLAY_H / 2; // lo mette in mezzo allo schermo type shi
     };
+
+    void show(){
+      Serial.println("we figaa");
+      this->display.clearDisplay();
+      this->display.writeFillRect(8, this->position, BAR_WIDTH, BAR_HEIGHT, 1);
+      this->display.display();
+      Serial.println("we figaa");
+    }
 };
 
 float map_number(float value, float input_min, float input_max, float output_min, float output_max){

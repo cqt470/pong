@@ -7,6 +7,7 @@
 
 // https://randomnerdtutorials.com/guide-for-oled-display-with-arduino/
 Adafruit_SSD1306 display(DISPLAY_W, DISPLAY_H, &Wire, -1);
+Player player_left(false, display);
 
 void setup() {
   Serial.begin(9600);
@@ -23,12 +24,29 @@ void setup() {
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
+  display.print("Caricando");
+  display.display();
+  delay(500);
+  display.setCursor(0, 0);
+  display.clearDisplay();
+  display.print("Caricando.");
+  display.display();
+  delay(500);
+  display.setCursor(0, 0);
+  display.clearDisplay();
+  display.print("Caricando..");
+  display.display();
+  delay(500);
+  display.setCursor(0, 0);
+  display.clearDisplay();
   display.print("Caricando...");
   display.display();
+  delay(500);
+  display.setCursor(0, 0);
+  display.clearDisplay();
+  display.display();
 
-  Player player_left(false);
-
-  delay(100);
+  delay(2000);
 }
 
 void loop() {
@@ -36,14 +54,12 @@ void loop() {
 
   // noto che il valore non supera spesso 690.
   // - BAR_HEIGHT perché così non può uscire dallo schermo
-  int val = floor(map_number(raw, 0, 690, 0, 32 - BAR_HEIGHT));
-  
+  int val = map_number(raw, 0, 690, 0, 32 - BAR_HEIGHT);
+
   Serial.println(val);
 
-  display.clearDisplay();
+  player_left.position = val;
+  player_left.show();
 
-  display.writeFillRect(8, val, BAR_WIDTH, BAR_HEIGHT, 1);
-
-  display.display();
   delay(10);
 }
