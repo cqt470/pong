@@ -26,6 +26,8 @@ void setup() {
   display.print("Caricando...");
   display.display();
 
+  Player player_left(false);
+
   delay(100);
 }
 
@@ -33,13 +35,15 @@ void loop() {
   int raw = analogRead(PIN_POTENTIOMETER);
 
   // noto che il valore non supera spesso 690.
-  float val = map_number(raw, 0, 690, 128, 0);
+  // - BAR_HEIGHT perché così non può uscire dallo schermo
+  int val = floor(map_number(raw, 0, 690, 0, 32 - BAR_HEIGHT));
+  
   Serial.println(val);
 
-  display.setCursor(0, 0);
   display.clearDisplay();
-  display.print(val);
+
+  display.writeFillRect(8, val, BAR_WIDTH, BAR_HEIGHT, 1);
 
   display.display();
-  delay(500);
+  delay(10);
 }
