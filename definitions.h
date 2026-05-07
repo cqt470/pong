@@ -9,8 +9,9 @@
 #define BAR_HEIGHT            4
 #define BAR_WIDTH             2
 
-#define BALL_VEL_MIN          -2
+#define BALL_VEL_MIN          -4
 #define BALL_VEL_MAX          2
+#define USE_RANDOM_SPEED      false // lowk è meglio se è fissa (yk?)
 #define BALL_W                2
 #define BALL_H                2
 
@@ -23,27 +24,30 @@ class Player{
 
   public:
     bool side;
-    int position;
+    int posx; int posy;
 
     // false = sinistra
     // true = destra
     // vedi -> https://stackoverflow.com/questions/6576109/
     Player(bool side, Adafruit_SSD1306& disp): display(disp){
       this->side = side;
-      this->position = (int) DISPLAY_H / 2; // lo mette in mezzo allo schermo type shi
+      this->posy = ((int) DISPLAY_H - BAR_HEIGHT) / 2;
     };
 
     void show(){
       int x_pos = 8;
       if(side) x_pos = DISPLAY_W - 8; // mette la sbarra a destra yk
+      this->posx = x_pos;
 
-      this->display.fillRect(x_pos, this->position, BAR_WIDTH, BAR_HEIGHT, 1);
+      this->display.fillRect(x_pos, this->posy, BAR_WIDTH, BAR_HEIGHT, 1);
     }
 };
 
 class Ball{
   private:
     Adafruit_SSD1306& display;
+    Player& player_left;
+    Player& player_right;
 
     //                  pointer type shi
     void randomize_velocity(int& value){
@@ -87,11 +91,33 @@ class Ball{
       }
     }
 
+    // la bar è il paddle, tipo la barra che si muove yk
+    void check_single_bar_collisions(int plr_x, int plr_y){
+      int ball_left = this->posx;
+      int ball_right = this->posx + BALL_W - 1;
+      int ball_top = this->posy;
+      int ball_bottom = this->posy + BALL_H - 1;
+
+      if(
+        plr_x <= ball_right &&
+        (plr_x + BAR_WIDTH - 1) >= ball_left &&
+        plr_y <= ball_bottom &&
+        (plr_y + BAR_HEIGHT - 1) >= ball_top
+      ){
+        this->velx = -this->velx;
+      }
+    }
+
+    void check_bar_collisions(){
+      this->check_single_bar_collisions(this->player_left.posx, this->player_left.posy);
+      this->check_single_bar_collisions(this->player_right.posx, this->player_right.posy);
+    }
+
   public:
     int posx; int posy;
     int velx; int vely;
 
-    Ball(Adafruit_SSD1306& disp): display(disp){
+    Ball(Adafruit_SSD1306& disp, Player& left, Player& right): display(disp), player_left(left), player_right(right){
       // metto la ball al centro ykyk
       this->posx = (int) DISPLAY_W / 2; this->posy = (int) DISPLAY_H / 2;
       this->randomize_velocities();
@@ -104,6 +130,7 @@ class Ball{
 
     void move(){
       this->check_margins();
+      this->check_bar_collisions();
       this->posx += this->velx; this->posy += this->vely;
       this->show();
     }

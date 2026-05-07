@@ -65,7 +65,7 @@ void loop(){
   int val = map_number(raw, 20, 670, 0, 32 - BAR_HEIGHT);
   display.clearDisplay();
 
-  player_left.position = val;
+  player_left.posy = val;
   player_left.show();
 
   player_right.show();
