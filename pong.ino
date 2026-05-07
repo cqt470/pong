@@ -10,7 +10,7 @@ Adafruit_SSD1306 display(DISPLAY_W, DISPLAY_H, &Wire, -1);
 Player player_left(false, display);
 Player player_right(true, display);
 
-Ball ball(display);
+Ball ball(display, player_left, player_right);
 
 void setup(){
   Serial.begin(9600);
