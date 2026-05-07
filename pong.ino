@@ -10,9 +10,15 @@ Adafruit_SSD1306 display(DISPLAY_W, DISPLAY_H, &Wire, -1);
 Player player_left(false, display);
 Player player_right(true, display);
 
-void setup() {
+Ball ball(display);
+
+void setup(){
   Serial.begin(9600);
   pinMode(PIN_POTENTIOMETER, INPUT);
+
+  // https://docs.arduino.cc/language-reference/en/functions/random-numbers/random/
+  // uso A3 perché non è un pin usato nel progetto
+  randomSeed(analogRead(A3));
   
   // dall'esempio della libreria
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
@@ -20,6 +26,8 @@ void setup() {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
+
+  ball.randomize_velocities();
 
   display.clearDisplay();
   display.setTextSize(1);
@@ -48,7 +56,7 @@ void setup() {
   display.display();
 }
 
-void loop() {
+void loop(){
   int raw = analogRead(PIN_POTENTIOMETER);
 
   // noto che il valore non supera spesso 690.
@@ -62,6 +70,8 @@ void loop() {
 
   player_right.show();
 
+  ball.move();
+
   display.display(); // aggiorna lo schermo solo quando serve
-  delay(10);
+  delay(100);
 }
