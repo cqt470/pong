@@ -48,6 +48,8 @@ class Ball{
     Adafruit_SSD1306& display;
     Player& player_left;
     Player& player_right;
+    // turn = false (tocca a sinistra), turn = true (tocca a destra)
+    bool turn = false;
 
     //                  pointer type shi
     void randomize_velocity(int& value){
@@ -66,6 +68,8 @@ class Ball{
       }
 
       if(random_value == 0) random_value = 1; // così la velocità non è mai 0
+
+      if(random_value < 0) this->turn = !this->turn;
 
       value = random_value;
     }
@@ -105,12 +109,23 @@ class Ball{
         (plr_y + BAR_HEIGHT - 1) >= ball_top
       ){
         this->velx = -this->velx;
+        this->turn = !this->turn;
       }
     }
 
     void check_bar_collisions(){
       this->check_single_bar_collisions(this->player_left.posx, this->player_left.posy);
       this->check_single_bar_collisions(this->player_right.posx, this->player_right.posy);
+    }
+
+    void check_win_conditions(){
+      if(this->posx <= 0){
+        Serial.println("Il random a destra vince!");
+        for(;;); // faccio crashare la board perché ho troppa aura (= sono stanco è l'una di notte)
+      }else if(this->posx >= DISPLAY_W){
+        Serial.println("Il random a sinistra vince!");
+        for(;;);
+      }
     }
 
   public:
@@ -129,6 +144,7 @@ class Ball{
     }
 
     void move(){
+      this->check_win_conditions();
       this->check_margins();
       this->check_bar_collisions();
       this->posx += this->velx; this->posy += this->vely;
