@@ -9,6 +9,13 @@
 #define BAR_HEIGHT            4
 #define BAR_WIDTH             2
 
+#define BALL_VEL_MIN          -2
+#define BALL_VEL_MAX          2
+#define BALL_W                2
+#define BALL_H                2
+
+#define FPS                   24
+
 class Player{
   private:
     // senza & non funziona, perché crea una copia e non un riferimento (pointer type shi yk)
@@ -27,11 +34,82 @@ class Player{
     };
 
     void show(){
-      Serial.println("we figaa");
-      this->display.clearDisplay();
-      this->display.writeFillRect(8, this->position, BAR_WIDTH, BAR_HEIGHT, 1);
-      this->display.display();
-      Serial.println("we figaa");
+      int x_pos = 8;
+      if(side) x_pos = DISPLAY_W - 8; // mette la sbarra a destra yk
+
+      this->display.fillRect(x_pos, this->position, BAR_WIDTH, BAR_HEIGHT, 1);
+    }
+};
+
+class Ball{
+  private:
+    Adafruit_SSD1306& display;
+
+    //                  pointer type shi
+    void randomize_velocity(int& value){
+      // ho notato che il robo non può generare numeri sotto 0, quindi se
+      // in totale il range è -8, 8; io faccio generare numeri da 0 a 16.
+      // poi, se il numero è sotto 8 gli metto semplicemente un meno
+      //                                   se per qualche motivo è negativo
+      int abs_random_value = abs(BALL_VEL_MIN) + abs(BALL_VEL_MAX);
+      int random_value = random(abs_random_value + 1); // da 0 a abs_random_value. Numero massimo incluso
+      int half_value = (int) (abs_random_value / 2);
+
+      if(random_value < half_value){
+        random_value -= random_value * 2; // 9 - 9 * 2 = 9 - 18 = -9
+      }else{
+        random_value -= half_value; // 15 - (es: 8) = 7. non esce dal range (es: -8 )
+      }
+
+      if(random_value == 0) random_value = 1; // così la velocità non è mai 0
+
+      value = random_value;
+    }
+
+    void check_margins(){
+      // premessa: la posizione è l'angolo in alto a sinistra
+      
+      if(this->posx <= 0){
+        this->posx = 0;
+        this->velx = -this->velx;
+      }else if(this->posx >= DISPLAY_W - BALL_W){
+        // considera le dimensioni per la collisione
+        this->posx = DISPLAY_W - BALL_W;
+        this->velx = -this->velx;
+      }
+
+      if(this->posy <= 0){
+        this->posy = 0;
+        this->vely = -this->vely;
+      }else if(this->posy >= DISPLAY_H - BALL_H){
+        this->posy = DISPLAY_H - BALL_H;
+        this->vely = -this->vely;
+      }
+    }
+
+  public:
+    int posx; int posy;
+    int velx; int vely;
+
+    Ball(Adafruit_SSD1306& disp): display(disp){
+      // metto la ball al centro ykyk
+      this->posx = (int) DISPLAY_W / 2; this->posy = (int) DISPLAY_H / 2;
+      this->randomize_velocities();
+    };
+
+    void randomize_velocities(){
+      this->randomize_velocity(this->velx);
+      this->randomize_velocity(this->vely);
+    }
+
+    void move(){
+      this->check_margins();
+      this->posx += this->velx; this->posy += this->vely;
+      this->show();
+    }
+
+    void show(){
+      this->display.drawRect(this->posx, this->posy, 2, 2, 1);
     }
 };
 
