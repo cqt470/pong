@@ -74,11 +74,19 @@ class Ball{
     }
 
     void check_win_conditions(){
-      if(this->posx <= 0){
-        Serial.println("Il random a destra vince!");
+      if(
+        this->posx < BAR_OFFSET && // dietro alla paddle
+        (this->posy < this->player_left.posy ||                    // sopra la paddle
+        this->posy > (this->player_left.posy + BAR_HEIGHT - 1))    // oppure sotto
+      ){
+        this->init();
         this->player_right.score++;
-      }else if(this->posx >= DISPLAY_W){
-        Serial.println("Il random a sinistra vince!");
+      }else if(
+        this->posx > (DISPLAY_W - BAR_OFFSET) && // dietro alla paddle
+        (this->posy < this->player_right.posy ||                    // sopra la paddle
+        this->posy > (this->player_right.posy + BAR_HEIGHT - 1))    // oppure sotto
+      ){
+        this->init();
         this->player_left.score++;
       }
     }
