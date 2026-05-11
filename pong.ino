@@ -10,9 +10,9 @@ Adafruit_SSD1306 display(DISPLAY_W, DISPLAY_H, &Wire, -1);
 Player player_left(false, display);
 Player player_right(true, display);
 
-Ball ball(display, player_left, player_right);
-
 Text text(display);
+
+Ball ball(display, player_left, player_right, text);
 
 void setup(){
   Serial.begin(9600);
@@ -50,8 +50,8 @@ void loop(){
 
   ball.move();
 
-  text.draw_score(10, 2);
+  text.draw_score(player_left.score, player_right.score);
 
   display.display(); // aggiorna lo schermo solo quando serve
-  delay(100);
+  delay((int) 1 / FPS * 1000);
 }

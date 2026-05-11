@@ -18,6 +18,8 @@
 
 #define MAX_SCORE             16
 
+#define FPS                   24
+
 #include "text.h"
 #include "player.h"
 #include "ball.h"
