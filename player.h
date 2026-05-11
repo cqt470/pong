@@ -17,8 +17,8 @@ class Player{
     };
 
     void show(){
-      int x_pos = 8;
-      if(side) x_pos = DISPLAY_W - 8; // mette la sbarra a destra yk
+      int x_pos = BAR_OFFSET;
+      if(side) x_pos = DISPLAY_W - BAR_OFFSET; // mette la sbarra a destra yk
       this->posx = x_pos;
 
       this->display.fillRect(x_pos, this->posy, BAR_WIDTH, BAR_HEIGHT, 1);
