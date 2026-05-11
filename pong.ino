@@ -12,6 +12,8 @@ Player player_right(true, display);
 
 Ball ball(display, player_left, player_right);
 
+Text text(display);
+
 void setup(){
   Serial.begin(9600);
   pinMode(PIN_POTENTIOMETER, INPUT);
@@ -28,32 +30,8 @@ void setup(){
   }
 
   ball.randomize_velocities();
-
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 0);
-  display.print("Caricando");
-  display.display();
-  delay(500);
-  display.setCursor(0, 0);
-  display.clearDisplay();
-  display.print("Caricando.");
-  display.display();
-  delay(500);
-  display.setCursor(0, 0);
-  display.clearDisplay();
-  display.print("Caricando..");
-  display.display();
-  delay(500);
-  display.setCursor(0, 0);
-  display.clearDisplay();
-  display.print("Caricando...");
-  display.display();
-  delay(500);
-  display.setCursor(0, 0);
-  display.clearDisplay();
-  display.display();
+  
+  text.show_loading();
 }
 
 void loop(){
@@ -71,6 +49,8 @@ void loop(){
   player_right.show();
 
   ball.move();
+
+  text.draw_score(10, 2);
 
   display.display(); // aggiorna lo schermo solo quando serve
   delay(100);
