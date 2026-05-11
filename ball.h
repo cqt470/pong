@@ -3,6 +3,7 @@ class Ball{
     Adafruit_SSD1306& display;
     Player& player_left;
     Player& player_right;
+    Text& text;
     // turn = false (tocca a sinistra), turn = true (tocca a destra)
     bool turn = false;
 
@@ -65,7 +66,7 @@ class Ball{
       ){
         this->velx = -this->velx;
         this->turn = !this->turn;
-        this->velx += 0.1; this->velx += 0.1;
+        this->velx += 0.1; this->vely += 0.1;
       }
     }
 
@@ -90,13 +91,27 @@ class Ball{
         this->init();
         this->player_left.score++;
       }
+
+      if(this->player_left.score == MAX_SCORE){
+        this->display.clearDisplay();
+        this->text.draw_centered_text("P1 ha vinto!");
+        this->display.display();
+        for(;;); // finisce il gioco
+      }
+
+      if(this->player_right.score == MAX_SCORE){
+        this->display.clearDisplay();
+        this->text.draw_centered_text("P2 ha vinto!");
+        this->display.display();
+        for(;;); // finisce il gioco
+      }
     }
 
   public:
     float posx; float posy;
     float velx; float vely;
 
-    Ball(Adafruit_SSD1306& disp, Player& left, Player& right): display(disp), player_left(left), player_right(right){
+    Ball(Adafruit_SSD1306& disp, Player& left, Player& right, Text& t): display(disp), player_left(left), player_right(right), text(t){
       this->init();
     };
 
@@ -124,6 +139,7 @@ class Ball{
       this->check_margins();
       this->check_bar_collisions();
       this->posx += this->velx; this->posy += this->vely;
+
       this->show();
     }
 

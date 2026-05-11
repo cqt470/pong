@@ -16,6 +16,8 @@
 #define BALL_W                2
 #define BALL_H                2
 
+#define MAX_SCORE             16
+
 #include "text.h"
 #include "player.h"
 #include "ball.h"
