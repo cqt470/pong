@@ -17,21 +17,13 @@ class Text{
       this->display.print("Caricando");
       this->display.display();
       delay(500);
-      this->display.setCursor(0, 0);
-      this->display.clearDisplay();
-      this->display.print("Caricando.");
-      this->display.display();
-      delay(500);
-      this->display.setCursor(0, 0);
-      this->display.clearDisplay();
-      this->display.print("Caricando..");
-      this->display.display();
-      delay(500);
-      this->display.setCursor(0, 0);
-      this->display.clearDisplay();
-      this->display.print("Caricando...");
-      this->display.display();
-      delay(500);
+
+      for(int i = 0; i < 3; i++){
+        this->display.print(".");
+        this->display.display();
+        delay(500);
+      }
+      
       this->display.setCursor(0, 0);
       this->display.clearDisplay();
       this->display.display();
