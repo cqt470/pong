@@ -6,6 +6,7 @@ class Player{
   public:
     bool side;
     int posx; int posy;
+    int score = 0;
 
     // false = sinistra
     // true = destra
