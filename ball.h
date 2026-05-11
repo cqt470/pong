@@ -76,10 +76,10 @@ class Ball{
     void check_win_conditions(){
       if(this->posx <= 0){
         Serial.println("Il random a destra vince!");
-        for(;;); // faccio crashare la board perché ho troppa aura (= sono stanco è l'una di notte)
+        this->player_right.score++;
       }else if(this->posx >= DISPLAY_W){
         Serial.println("Il random a sinistra vince!");
-        for(;;);
+        this->player_left.score++;
       }
     }
 
@@ -88,10 +88,14 @@ class Ball{
     int velx; int vely;
 
     Ball(Adafruit_SSD1306& disp, Player& left, Player& right): display(disp), player_left(left), player_right(right){
+      this->init();
+    };
+
+    void init(){
       // metto la ball al centro ykyk
       this->posx = (int) DISPLAY_W / 2; this->posy = (int) DISPLAY_H / 2;
       this->randomize_velocities();
-    };
+    }
 
     void randomize_velocities(){
       this->randomize_velocity(this->velx);
