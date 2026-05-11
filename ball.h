@@ -7,7 +7,7 @@ class Ball{
     bool turn = false;
 
     //                  pointer type shi
-    void randomize_velocity(int& value){
+    void randomize_velocity(float& value){
       // ho notato che il robo non può generare numeri sotto 0, quindi se
       // in totale il range è -8, 8; io faccio generare numeri da 0 a 16.
       // poi, se il numero è sotto 8 gli metto semplicemente un meno
@@ -65,6 +65,7 @@ class Ball{
       ){
         this->velx = -this->velx;
         this->turn = !this->turn;
+        this->velx += 0.1; this->velx += 0.1;
       }
     }
 
@@ -92,8 +93,8 @@ class Ball{
     }
 
   public:
-    int posx; int posy;
-    int velx; int vely;
+    float posx; float posy;
+    float velx; float vely;
 
     Ball(Adafruit_SSD1306& disp, Player& left, Player& right): display(disp), player_left(left), player_right(right){
       this->init();
@@ -111,12 +112,10 @@ class Ball{
         this->randomize_velocity(this->vely);
       }else{
         bool velx_sign = random(0, 2); bool vely_sign = random(0, 2);
-        Serial.println(velx_sign);
-        Serial.println(vely_sign);
-        this->velx = 3; this->vely = 2;
+        this->velx = 1; this->vely = 0.4;
 
-        if(velx_sign) this->velx = -3;
-        if(vely_sign) this->vely = -2;
+        if(velx_sign) this->velx = -1;
+        if(vely_sign) this->vely = -0.4;
       }
     }
 
