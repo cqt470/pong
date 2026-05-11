@@ -106,8 +106,18 @@ class Ball{
     }
 
     void randomize_velocities(){
-      this->randomize_velocity(this->velx);
-      this->randomize_velocity(this->vely);
+      if(USE_RANDOM_SPEEDS){
+        this->randomize_velocity(this->velx);
+        this->randomize_velocity(this->vely);
+      }else{
+        bool velx_sign = random(0, 2); bool vely_sign = random(0, 2);
+        Serial.println(velx_sign);
+        Serial.println(vely_sign);
+        this->velx = 3; this->vely = 2;
+
+        if(velx_sign) this->velx = -3;
+        if(vely_sign) this->vely = -2;
+      }
     }
 
     void move(){

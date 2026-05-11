@@ -8,14 +8,13 @@
 
 #define BAR_HEIGHT            4
 #define BAR_WIDTH             2
+#define BAR_OFFSET            8
 
 #define BALL_VEL_MIN          -4
 #define BALL_VEL_MAX          2
 #define USE_RANDOM_SPEEDS     false // lowk è meglio se è fissa (yk?)
 #define BALL_W                2
 #define BALL_H                2
-
-#define FPS                   24
 
 #include "text.h"
 #include "player.h"
