@@ -12,7 +12,7 @@
 
 #define BALL_VEL_MIN          -4
 #define BALL_VEL_MAX          2
-#define USE_RANDOM_SPEEDS     false // lowk è meglio se è fissa (yk?)
+#define USE_RANDOM_SPEEDS     false // è utile impostarlo su false per evitare velocità sballate (es: velx 1, vely 7)
 #define BALL_W                2
 #define BALL_H                2
 

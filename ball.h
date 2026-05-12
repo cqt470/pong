@@ -4,15 +4,16 @@ class Ball{
     Player& player_left;
     Player& player_right;
     Text& text;
-    // turn = false (tocca a sinistra), turn = true (tocca a destra)
+    // turn = false (turno del player a sinistra),
+    // turn = true (turno del player a destra)
     bool turn = false;
 
-    //                  pointer type shi
     void randomize_velocity(float& value){
-      // ho notato che il robo non può generare numeri sotto 0, quindi se
-      // in totale il range è -8, 8; io faccio generare numeri da 0 a 16.
-      // poi, se il numero è sotto 8 gli metto semplicemente un meno
-      //                                   se per qualche motivo è negativo
+      // ho notato che random() non può generare numeri sotto 0, quindi se prima volevo
+      // generare numeri da -8 a 8, ora posso farli generare da 0 a 16. Ora devo solo
+      // controllare se il numero generato è sotto il numero medio 8, in tal caso
+      // assegno semplicemente un - alla variabile.
+
       int abs_random_value = abs(BALL_VEL_MIN) + abs(BALL_VEL_MAX);
       int random_value = random(abs_random_value + 1); // da 0 a abs_random_value. Numero massimo incluso
       int half_value = (int) (abs_random_value / 2);
@@ -25,7 +26,7 @@ class Ball{
 
       if(random_value == 0) random_value = 1; // così la velocità non è mai 0
 
-      if(random_value < 0) this->turn = !this->turn;
+      if(random_value < 0) this->turn = !this->turn; // inverte turn, quindi passa il turno all'altro
 
       value = random_value;
     }
@@ -33,6 +34,7 @@ class Ball{
     void check_margins(){
       // premessa: la posizione è l'angolo in alto a sinistra
       
+      // controlli dei margini destra e sinistra
       if(this->posx <= 0){
         this->posx = 0;
         this->velx = -this->velx;
@@ -42,6 +44,7 @@ class Ball{
         this->velx = -this->velx;
       }
 
+      // controlli dei margini sopra e sotto
       if(this->posy <= 0){
         this->posy = 0;
         this->vely = -this->vely;
@@ -51,8 +54,11 @@ class Ball{
       }
     }
 
-    // la bar è il paddle, tipo la barra che si muove yk
+    // la bar è il paddle, ovvero quei due rettangoli a destra e a sinistra
+    // che indicano i giocatori
     void check_single_bar_collisions(int plr_x, int plr_y){
+      // imposto tutti i punti per accorciare il codice
+
       int ball_left = this->posx;
       int ball_right = this->posx + BALL_W - 1;
       int ball_top = this->posy;
@@ -66,6 +72,7 @@ class Ball{
       ){
         this->velx = -this->velx;
         this->turn = !this->turn;
+        // rende il gioco più caotico aumentando la velocità della palla ad ogni hit
         this->velx += 0.1; this->vely += 0.1;
       }
     }
@@ -96,14 +103,14 @@ class Ball{
         this->display.clearDisplay();
         this->text.draw_centered_text("P1 ha vinto!");
         this->display.display();
-        for(;;); // finisce il gioco
+        for(;;); // finisce il gioco (è necessario resettare la scheda oppure togliere e rimettere la corrente)
       }
 
       if(this->player_right.score == MAX_SCORE){
         this->display.clearDisplay();
         this->text.draw_centered_text("P2 ha vinto!");
         this->display.display();
-        for(;;); // finisce il gioco
+        for(;;); // finisce il gioco (è necessario resettare la scheda oppure togliere e rimettere la corrente)
       }
     }
 
@@ -116,7 +123,7 @@ class Ball{
     };
 
     void init(){
-      // metto la ball al centro ykyk
+      // imposto la posizione della palla al centro dello schermo
       this->posx = (int) DISPLAY_W / 2; this->posy = (int) DISPLAY_H / 2;
       this->randomize_velocities();
     }

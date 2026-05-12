@@ -8,7 +8,7 @@ class Text{
     };
 
     void show_loading(){
-      // per qualche motivo se metto questo nel constructor non funziona, boh idk
+      // per qualche motivo se metto questo nel constructor non funziona, boh
       this->display.clearDisplay();
       this->display.setTextSize(1);
       this->display.setTextColor(SSD1306_WHITE);
