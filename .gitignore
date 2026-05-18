@@ -1,3 +1,5 @@
 *bootloader*
 *eep*
 *elf*
+*node_modules*
+*package-lock.json*
