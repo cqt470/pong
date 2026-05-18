@@ -1,47 +1,48 @@
 // server.js
-const express = require('express');
-const http = require('http');
-const { WebSocketServer } = require('ws');
+
+const { utils } = require("./stuff/utils");
+// const handler = require("./stuff/handler");
+
+const express = require("express");
+const http = require("http");
+const { WebSocketServer } = require("ws");
 
 const app = express();
 const PORT = 3000;
 
-// Servire un file HTML statico (lo creeremo dopo)
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+utils.app = app;
+
+app.get("/", (req, res) => {
+    utils.serve("fallback.html", res);
 });
 
 const server = http.createServer(app);
 
-// Attacca il server WebSocket al server HTTP e ascolta sul percorso '/ws'
-const wss = new WebSocketServer({ server, path: '/ws' });
+// Attacca il server WebSocket al server HTTP e ascolta sul percorso "/ws"
+const wss = new WebSocketServer({ server, path: "/ws" });
 
-app.get('/ws', (req, res) => {
-    res.send(`
-        <h1>WebSocket Endpoint</h1>
-        <p>Questo è l'endpoint WebSocket. Usa un client WebSocket per connetterti.</p>
-        <p>URL: ws://${req.headers.host}/ws</p>
-    `);
+app.get("/ws", (req, res) => {
+    utils.serve("welcome.html", res);
 });
 
-wss.on('connection', (ws, req) => {
-    console.log(`[Server] Client connesso!`);
-    ws.send('Benvenuto! Sei connesso al server WebSocket.');
+wss.on("connection", (ws, req) => {
+    utils.log("Client connesso", "INFO");
+    ws.send("Unc si è VERAMENTE connesso ad un webserver :wilted_rose:");
 
     // Gestisce i messaggi ricevuti dal client
-    ws.on('message', (data) => {
+    ws.on("message", (data) => {
         const message = data.toString();
-        console.log(`[Server] Messaggio ricevuto: ${message}`);
+        utils.log(`Messaggio ricevuto: ${message}`);
 
         // Invia una risposta automatica al client (echo)
-        ws.send(`Server dice: Ho ricevuto il tuo messaggio: "${message}"`);
+        ws.send(`bro tu NON devi sprecare la mia banda, "${message}"`);
     });
 
-    ws.on('close', () => {
-        console.log(`[Server] Client disconnesso.`);
+    ws.on("close", () => {
+        utils.log("Client disconnesso");
     });
 });
 
 server.listen(PORT, () => {
-    console.log(`Server HTTP e WebSocket in ascolto su http://localhost:${PORT}/ws`);
+    utils.log(`Server HTTP e WebSocket in ascolto su http://<url>:${PORT}/ws`, "INFO");
 });
