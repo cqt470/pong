@@ -1,5 +1,3 @@
-const path = require("node:path");
-
 class Utils{
     constructor(){
         /**
@@ -40,18 +38,6 @@ class Utils{
         }
 
         console.log(`[${this.get_timestamp()}] [${priority}] - ${message}`);
-    }
-
-    /**
-     * Serve (dà, invia) un file statico e logga l'azione.
-     * @param {String?} file_path Il percorso del file all'interno di ws/static/
-     * @param {Response} response
-     */
-    serve(file_path, response){
-        const base_path = path.resolve(__filename, "../../static/");
-        
-        response.sendFile(`${base_path}/${file_path}`);
-        this.log(`Pagina servita: ${file_path}`);
     }
 }
 

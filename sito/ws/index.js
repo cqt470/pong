@@ -1,7 +1,7 @@
 // server.js
 
 const { utils } = require("./stuff/utils");
-// const handler = require("./stuff/handler");
+const { handler } = require("./stuff/handler");
 
 const express = require("express");
 const http = require("http");
@@ -13,7 +13,7 @@ const PORT = 3000;
 utils.app = app;
 
 app.get("/", (req, res) => {
-    utils.serve("fallback.html", res);
+    handler.serve("fallback.html", res);
 });
 
 const server = http.createServer(app);
@@ -22,7 +22,7 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: "/ws" });
 
 app.get("/ws", (req, res) => {
-    utils.serve("welcome.html", res);
+    handler.serve("welcome.html", res);
 });
 
 wss.on("connection", (ws, req) => {
@@ -44,5 +44,7 @@ wss.on("connection", (ws, req) => {
 });
 
 server.listen(PORT, () => {
-    utils.log(`Server HTTP e WebSocket in ascolto su http://<url>:${PORT}/ws`, "INFO");
+    utils.log(`Server HTTP e WebSocket in ascolto`, "INFO");
+    utils.log(`Server HTTP: http://localhost:${PORT}/ws`, "INFO");
+    utils.log(`Server WebSocket: ws://localhost:${PORT}/ws`, "INFO");
 });
