@@ -26,21 +26,7 @@ app.get("/ws", (req, res) => {
 });
 
 wss.on("connection", (ws, req) => {
-    utils.log("Client connesso", "INFO");
-    ws.send("Unc si è VERAMENTE connesso ad un webserver :wilted_rose:");
-
-    // Gestisce i messaggi ricevuti dal client
-    ws.on("message", (data) => {
-        const message = data.toString();
-        utils.log(`Messaggio ricevuto: ${message}`);
-
-        // Invia una risposta automatica al client (echo)
-        ws.send(`bro tu NON devi sprecare la mia banda, "${message}"`);
-    });
-
-    ws.on("close", () => {
-        utils.log("Client disconnesso");
-    });
+    handler.handle_connections(ws, req);
 });
 
 server.listen(PORT, () => {
