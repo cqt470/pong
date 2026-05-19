@@ -9,7 +9,7 @@ class Utils{
     /**
      * Poi scrivo la descrizione lol
      * @param {boolean} formatted Deve ritornare una stringa formattata? Default: true 
-     * @returns 
+     * @returns {String|Number} La data e ora attuale formattata o come timestamp
      */
     get_timestamp(formatted = true){
         const date = new Date();
@@ -38,6 +38,14 @@ class Utils{
         }
 
         console.log(`[${this.get_timestamp()}] [${priority}] - ${message}`);
+    }
+
+    /**
+     * @see https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
+     * @param {Number} ms I millisecondi da aspettare
+     */
+    wait(ms){
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
 
