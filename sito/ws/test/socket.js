@@ -4,8 +4,13 @@
 
 const { WebSocket } = require("ws");
 const { utils } = require("../stuff/utils");
+require("dotenv").config({quiet: true});
 
-ws = new WebSocket("ws://localhost:3000/ws");
+const URL_WS = process.env.ENV == "PROD" ? process.env.URL_WS_PROD : process.env.URL_WS_DEV;
+
+utils.log(`Avvio test WebSocket. URL del server: ${URL_WS}`, "DEBUG");
+
+ws = new WebSocket(URL_WS);
 
 ws.onerror = function(error){
     utils.log(`Errore WebSocket: ${error.message}`, "ERROR");
