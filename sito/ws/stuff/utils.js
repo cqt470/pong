@@ -47,6 +47,26 @@ class Utils{
     wait(ms){
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    /**
+     * Ottiene l'indirizzo IP del client da una richiesta HTTP, tenendo conto di eventuali proxy o CDN
+     * @param {http.IncomingMessage} req La richiesta HTTP da cui estrarre l'indirizzo IP
+     * @returns {String} L'indirizzo IP del client
+     */
+    get_client_ip(req){
+        let ip = req.headers['cf-connecting-ip']
+            || req.headers['x-forwarded-for']?.split(',')[0]?.trim()
+            || req.headers['x-real-ip']
+            || req.socket?.remoteAddress
+            || req.connection?.remoteAddress;
+
+        // toglie il prefisso IPv6 se presente
+        if(ip && ip.startsWith("::ffff:")){
+            ip = ip.replace("::ffff:", "");
+        }
+
+        return ip;
+    }
 }
 
 const utils = new Utils();

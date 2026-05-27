@@ -27,30 +27,30 @@ class Handler{
         utils.log(`Pagina servita: ${file_path}`);
     }
 
-    _disconnect_client(code = 1000, reason = "Normal Closure"){
+    #disconnect_client(code = 1000, reason = "Normal Closure"){
         this.ws.close(code, reason);
-        utils.log(`Client disconnesso: ${this.req.socket.remoteAddress} (${reason})`, "INFO");
+        utils.log(`Client disconnesso: ${this.remote_address} (${reason})`, "INFO");
     }
 
-    _handle_messages(incoming_data){
+    #handle_messages(incoming_data){
         const datatype = typeof incoming_data;
         
         if(datatype != "object"){
-            this._disconnect_client(1003, "Tipo di dato non supportato");
+            this.#disconnect_client(1003, "Tipo di dato non supportato");
             return;
         }
 
         // TODO: aggiungere in un configs il limite di dimensione
         if(incoming_data.length > 127){
-            this._disconnect_client(1003, `Messaggio troppo grande, ${incoming_data.length} byte`);
+            this.#disconnect_client(1003, `Messaggio troppo grande, ${incoming_data.length} byte`);
             return;
         }
 
         utils.log(`Messaggio ricevuto: ${incoming_data}`, "INFO");
     }
 
-    _handle_closes(){
-        utils.log(`Client disconnesso: ${this.req.socket.remoteAddress}`, "INFO");
+    #handle_closes(){
+        utils.log(`Client disconnesso: ${this.remote_address}`, "INFO");
     }
 
     /**
@@ -60,14 +60,13 @@ class Handler{
      * @param {http.incomingMessage} req La richiesta HTTP che ha portato alla connessione WebSocket
      */
     handle_connections(ws, req){
-        // TODO: confermare che questo dia effettivamente l'indirizzo pubblico
-        this.remote_address = req.socket.remoteAddress;
+        this.remote_address = utils.get_client_ip(req);
         this.ws = ws; this.req = req;
 
-        utils.log(`Client connesso: ${req.socket.remoteAddress}`, "INFO");
+        utils.log(`Client connesso: ${this.remote_address}`, "INFO");
 
-        ws.on("message", (data) => this._handle_messages(data));
-        ws.on("close", () => this._handle_closes());
+        ws.on("message", (data) => this.#handle_messages(data));
+        ws.on("close", () => this.#handle_closes());
     }
 }
 
