@@ -22,13 +22,13 @@ class CanvasHandler{
         this.bar_width = settings.bar_width || 2;
 
         this.#WS_URL = settings.env == "prod" ? "ws://pong.zexahost.org/ws" : "ws://localhost:3000/ws";
+        /** @see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket */
+        this.ws = new WebSocket(this.#WS_URL);
 
         console.log(`WebSocket URL: ${this.#WS_URL}`);
 
         this.fill();
-        this.draw_pixel(16, 0, true);
-        this.draw_paddle(false, 14);
-        this.draw_paddle(true, 40);
+        this.listen();
     }
 
     fill(){
@@ -63,6 +63,21 @@ class CanvasHandler{
                 this.draw_pixel(x_pos + x, posy + y, true);
             }
         }
+    }
+
+    listen(){
+        this.ws.addEventListener("message", (event) => {
+            console.log(`IN: ${event.data} (origin: ${event.origin})`);
+
+            const data = JSON.parse(event.data);
+
+            if(data.t == "update"){
+                this.fill();
+                this.draw_paddle(false, data.l);
+                this.draw_paddle(true, data.r);
+                this.draw_pixel(data.b.x, data.b.y, true);
+            }
+        })
     }
 }
 

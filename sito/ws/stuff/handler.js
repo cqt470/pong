@@ -64,9 +64,36 @@ class Handler{
         this.ws = ws; this.req = req;
 
         utils.log(`Client connesso: ${this.remote_address}`, "INFO");
+        
+        this.#send_random_data();
 
         ws.on("message", (data) => this.#handle_messages(data));
         ws.on("close", () => this.#handle_closes());
+    }
+
+    async #send_random_data(){
+        while(this.ws && this.ws.readyState === 1){
+            await utils.wait(1000 / 1); // 24 FPS
+
+            try{
+                const pos_left = Math.floor(Math.random() * 64);
+                const pos_right = Math.floor(Math.random() * 64);
+                const pos_ball = {
+                    x: Math.floor(Math.random() * 128),
+                    y: Math.floor(Math.random() * 64)
+                };
+
+                this.ws.send(JSON.stringify({
+                    "t": "update",
+                    "r": pos_right,
+                    "l": pos_left,
+                    "b": pos_ball
+                }));
+            }catch(err){
+                utils.log(`Errore invio dati a ${this.remote_address}: ${err.message}`, "ERROR");
+                break;
+            }
+        }
     }
 }
 

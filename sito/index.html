@@ -23,7 +23,7 @@
                     </a>
                 </div>
             </nav>
-            <canvas id="pong_canvas" width="800" height="600"></canvas>
+            <canvas id="pong_canvas" width="768" height="384"></canvas>
             <footer>
                 <p>Questo progetto è open-source e protetto dalla licenza GPL-2.0.</p>
             </footer>
@@ -35,20 +35,13 @@
         -->
     </main>
     <script type="module">
-        import { Draw } from "./js/draw.js";
+        import { CanvasHandler } from "./js/canvas_handler.js";
 
-        const draw = new Draw(document.getElementById("pong_canvas"), {
-            "env": "dev"
+        const canvasHandler = new CanvasHandler(document.getElementById("pong_canvas"), {
+            "env": "dev",
+            "bar_height": 12,
+            "bar_width": 1
         });
-
-        console.log("Script caricato");
-        /*
-        ws = new WebSocket("ws://localhost:3000/ws");
-
-        ws.onopen = function() {
-            console.log("WebSocket connection opened");
-        };
-        */
     </script>
 </body>
 </html>
