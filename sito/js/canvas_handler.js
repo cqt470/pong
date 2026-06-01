@@ -58,6 +58,9 @@ class CanvasHandler{
     draw_paddle(side, posy){
         var x_pos = this.bar_offset;
         if(side) x_pos = this.resized_sizex - this.bar_offset;
+
+        if(posy + this.bar_height > this.resized_sizey) posy = this.resized_sizey - this.bar_height;
+
         for(var x = 0; x < this.bar_width; x++){
             for(var y = 0; y < this.bar_height; y++){
                 this.draw_pixel(x_pos + x, posy + y, true);
@@ -67,6 +70,8 @@ class CanvasHandler{
 
     listen(){
         this.ws.addEventListener("message", (event) => {
+            if(event.target != this.ws) return;
+
             console.log(`IN: ${event.data} (origin: ${event.origin})`);
 
             const data = JSON.parse(event.data);
