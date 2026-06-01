@@ -4,13 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css.notype.cpp.sixseven.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">    <link rel="stylesheet" href="style.css.notype.cpp.sixseven.css">
 </head>
 <body>
     <main>
-        <h1>Progetto robotica primo anno</h1>
-        <p><i>Contenuto del progetto: pong</i></p>
-        <canvas id="pong_canvas" width="800" height="600"></canvas>
+        <div class="canvas">
+            <nav>
+                <div class="title">
+                    <h1>Progetto di Robotica</h1>
+                    <p><i>Contenuto del progetto: pong</i></p>
+                </div>
+                <div class="ctas">
+                    <a href="https://github.com/cqt470/pong" target="_blank">
+                        <i class="bi bi-github"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/gioele-cairo-8a5243349/" target="_blank">
+                        <i class="bi bi-linkedin"></i>
+                    </a>
+                </div>
+            </nav>
+            <canvas id="pong_canvas" width="800" height="600"></canvas>
+            <footer>
+                <p>Questo progetto è open-source e protetto dalla licenza GPL-2.0.</p>
+            </footer>
+        </div>
         <!--
         <h1>Test Websocket</h1>
         <i>Questo progetto è open-source! <a href="https://github.com/cqt470/pong" target="_blank">Vedi il codice sorgente</a>.</i>
@@ -19,6 +36,10 @@
     </main>
     <script type="module">
         import { Draw } from "./js/draw.js";
+
+        const draw = new Draw(document.getElementById("pong_canvas"), {
+            "env": "dev"
+        });
 
         console.log("Script caricato");
         /*
