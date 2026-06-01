@@ -55,7 +55,8 @@ main{
     }
 
     & canvas{
-        border-radius: 16px;
+        /* da evitare perché nasconde dei pixel */
+        /* border-radius: 16px; */
         margin: 32px 0;
     }
 
