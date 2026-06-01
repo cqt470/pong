@@ -8,16 +8,26 @@
 </head>
 <body>
     <main>
+        <h1>Progetto robotica primo anno</h1>
+        <p><i>Contenuto del progetto: pong</i></p>
+        <canvas id="pong_canvas" width="800" height="600"></canvas>
+        <!--
         <h1>Test Websocket</h1>
         <i>Questo progetto è open-source! <a href="https://github.com/cqt470/pong" target="_blank">Vedi il codice sorgente</a>.</i>
         <i>&copy; 2026 0°K, cqt470. Tutti i diritti riservati.</i>
+        -->
     </main>
-    <script>
+    <script type="module">
+        import { Draw } from "./js/draw.js";
+
+        console.log("Script caricato");
+        /*
         ws = new WebSocket("ws://localhost:3000/ws");
 
         ws.onopen = function() {
             console.log("WebSocket connection opened");
         };
+        */
     </script>
 </body>
 </html>
