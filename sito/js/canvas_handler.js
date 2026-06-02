@@ -21,14 +21,28 @@ class CanvasHandler{
         this.bar_height = settings.bar_height || 4;
         this.bar_width = settings.bar_width || 2;
 
+        this.uuid = crypto.randomUUID();
+        console.log(`Client UUID: ${this.uuid}`);
+
         this.#WS_URL = settings.env == "prod" ? "ws://pong.zexahost.org/ws" : "ws://localhost:3000/ws";
         /** @see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket */
         this.ws = new WebSocket(this.#WS_URL);
 
         console.log(`WebSocket URL: ${this.#WS_URL}`);
+        
+        this.send_uuid();
 
         this.fill();
         this.listen();
+    }
+
+    send_uuid(){
+        this.ws.addEventListener("open", () => {
+            this.ws.send(JSON.stringify({
+                "t": "uuid",
+                "uuid": this.uuid
+            }));
+        });
     }
 
     fill(){
