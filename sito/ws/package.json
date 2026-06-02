@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "test:socket": "nodemon test/socket.js"
+    "test:socket": "node test/socket.js",
+    "test:board": "node test/board.js"
   },
   "dependencies": {
     "dotenv": "^17.4.2",
