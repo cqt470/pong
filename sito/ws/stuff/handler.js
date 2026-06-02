@@ -46,6 +46,18 @@ class Handler{
             return;
         }
 
+        const data = JSON.parse(incoming_data);
+        const type = data?.t;
+        
+        if(!type){
+            this.ws.send(JSON.stringify({
+                "t": "error",
+                "message": "Messaggio privo di tipo"
+            }));
+            this.#disconnect_client(1003, "Messaggio privo di tipo");
+            return;
+        }
+
         utils.log(`Messaggio ricevuto: ${incoming_data}`, "INFO");
     }
 
