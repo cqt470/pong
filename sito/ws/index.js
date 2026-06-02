@@ -1,5 +1,6 @@
 // server.js
 
+const { configs } = require("./stuff/configs");
 const { utils } = require("./stuff/utils");
 const { handler } = require("./stuff/handler");
 
@@ -9,10 +10,6 @@ const { WebSocketServer } = require("ws");
 require("dotenv").config({quiet: true});
 
 const app = express();
-const PORT = 3000;
-
-const URL_HTTP = process.env.ENV == "PROD" ? process.env.URL_HTTP_PROD : process.env.URL_HTTP_DEV;
-const URL_WS = process.env.ENV == "PROD" ? process.env.URL_WS_PROD : process.env.URL_WS_DEV;
 
 utils.app = app;
 
@@ -33,8 +30,8 @@ wss.on("connection", (ws, req) => {
     handler.handle_connections(ws, req);
 });
 
-server.listen(PORT, () => {
+server.listen(configs.WS_PORT, () => {
     utils.log(`Server HTTP e WebSocket in ascolto`, "INFO");
-    utils.log(`Server HTTP: ${URL_HTTP}`, "INFO");
-    utils.log(`Server WebSocket: ${URL_WS}`, "INFO");
+    utils.log(`Server HTTP: ${configs.urls.HTTP}`, "INFO");
+    utils.log(`Server WebSocket: ${configs.urls.WS}`, "INFO");
 });
