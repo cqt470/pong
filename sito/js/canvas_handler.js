@@ -24,7 +24,9 @@ class CanvasHandler{
         this.uuid = crypto.randomUUID();
         console.log(`Client UUID: ${this.uuid}`);
 
-        this.#WS_URL = settings.env == "prod" ? "ws://pong.zexahost.org/ws" : "ws://localhost:3000/ws";
+        const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+        const wsHost = window.location.host;
+        this.#WS_URL = settings.ws_url || `${wsScheme}://${wsHost}/ws`;
         /** @see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket */
         this.ws = new WebSocket(this.#WS_URL);
 
