@@ -130,7 +130,7 @@ class Handler{
             this.#set_uuid(data, ws, remote);
         }
 
-        utils.log(`Messaggio ricevuto: ${incoming_data}`, "INFO");
+        // utils.log(`Messaggio ricevuto: ${incoming_data}`, "DEBUG");
     }
 
     #handle_closes(ws, remote, code, reason){
