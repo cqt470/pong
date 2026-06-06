@@ -23,7 +23,7 @@
                     </a>
                 </div>
             </nav>
-            <canvas id="pong_canvas" width="768" height="384"></canvas>
+            <canvas id="pong_canvas" width="512" height="256"></canvas>
             <footer>
                 <p>Questo progetto è open-source e protetto dalla licenza GPL-2.0.</p>
             </footer>
@@ -39,6 +39,7 @@
 
         const canvasHandler = new CanvasHandler(document.getElementById("pong_canvas"), {
             "env": "dev",
+            "ws_url": `ws://${window.location.hostname}:3040/ws`,
             "bar_height": 12,
             "bar_width": 1
         });
