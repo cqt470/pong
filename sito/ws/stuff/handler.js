@@ -30,6 +30,7 @@ class Handler{
     #set_uuid(data, remote){
         this.clients.push({
             "uuid": data.uuid,
+            "slave": data.slave === true,
             "address": remote
         });
 
@@ -70,6 +71,9 @@ class Handler{
         }
 
         if(type === "uuid"){
+            ws.isSlave = data.slave === true;
+            ws.uuid = data.uuid;
+            utils.log(`Client ${remote} registrato come ${ws.isSlave ? "slave" : "master"} (uuid=${data.uuid})`, "INFO");
             this.#set_uuid(data, remote);
         }
 
@@ -89,6 +93,9 @@ class Handler{
     handle_connections(ws, req){
         const remote = utils.get_client_ip(req);
 
+        ws.isSlave = null;
+        ws.uuid = null;
+
         utils.log(`Client connesso: ${remote}`, "INFO");
         utils.log(`Upgrade path: ${req.url}`, "DEBUG");
         utils.log(`Headers UA: ${req.headers["user-agent"] || "n/a"}`, "DEBUG");
@@ -103,6 +110,10 @@ class Handler{
     async #send_random_data(ws, remote){
         while(ws && ws.readyState === 1){
             await utils.wait(1000 / 1); // 1 Hz
+
+            if(ws.isSlave !== false){
+                continue;
+            }
 
             try{
                 const pos_left = Math.floor(Math.random() * 64);
