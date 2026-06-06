@@ -1,8 +1,8 @@
 #include "ESP8266WiFi.h"
 #include "WebSocketsClient.h"
 
-const char* ssid = "abracadabra";
-const char* password = "bimbimbambam";
+const char* ssid = "FibreBox_X6-347BB7_10";
+const char* password = "T9JY4U6CNMC6FMXNW7";
 
 const char* websocket_server = "192.168.1.101";
 const uint16_t websocket_port = 3040;

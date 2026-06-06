@@ -8,6 +8,15 @@ class Handler{
         /** class holds no per-connection state; clients tracked here */
         /** @type {Object[]} */
         this.clients = [];
+        this.latestState = {
+            l: null,
+            r: null,
+            b: null
+        };
+
+        this.broadcastInterval = setInterval(() => {
+            this.#broadcast_state();
+        }, 1000 / 24);
 
         this.heartbeatInterval = setInterval(() => {
             for(const client of this.clients){
@@ -36,6 +45,10 @@ class Handler{
         if(typeof this.heartbeatInterval.unref === "function"){
             this.heartbeatInterval.unref();
         }
+
+        if(typeof this.broadcastInterval.unref === "function"){
+            this.broadcastInterval.unref();
+        }
     }
 
     /**
@@ -60,7 +73,8 @@ class Handler{
             "uuid": data.uuid,
             "slave": data.slave === true,
             "address": remote,
-            "socket": ws
+            "socket": ws,
+            "sideKey": null
         };
 
         const existing_index = this.clients.findIndex((client) => client.uuid === data.uuid);
@@ -78,6 +92,17 @@ class Handler{
     #remove_client(ws, remote){
         const uuid = ws?.uuid;
         const before = this.clients.length;
+        const client = uuid
+            ? this.clients.find((entry) => entry.uuid === uuid)
+            : this.clients.find((entry) => entry.address === remote);
+
+        if(client?.sideKey === "l"){
+            this.latestState.l = null;
+        }
+
+        if(client?.sideKey === "r"){
+            this.latestState.r = null;
+        }
 
         if(uuid){
             this.clients = this.clients.filter((client) => client.uuid !== uuid);
@@ -132,21 +157,25 @@ class Handler{
         }
 
         if(type === "update" && ws.isSlave === true){
-            for(const client of this.clients){
-                if(client.slave === true){
-                    continue;
-                }
+            if(data.l !== undefined){
+                ws.sideKey = "l";
+                this.latestState.l = data.l;
+            }
 
-                const socket = client.socket;
+            if(data.r !== undefined){
+                ws.sideKey = "r";
+                this.latestState.r = data.r;
+            }
 
-                if(!socket || socket.readyState !== 1){
-                    continue;
-                }
+            if(data.b !== undefined){
+                this.latestState.b = data.b;
+            }
 
-                try{
-                    socket.send(JSON.stringify(data));
-                }catch(err){
-                    utils.log(`Invio update fallito verso ${client.uuid} (${client.address}): ${err.message}`, "ERROR");
+            if(ws.uuid){
+                const client = this.clients.find((entry) => entry.uuid === ws.uuid);
+
+                if(client){
+                    client.sideKey = ws.sideKey;
                 }
             }
 
@@ -160,6 +189,41 @@ class Handler{
     #handle_closes(ws, remote, code, reason){
         this.#remove_client(ws, remote);
         utils.log(`Client disconnesso: ${remote} code=${code} reason=${reason}`, "INFO");
+    }
+
+    #broadcast_state(){
+        const has_state = this.latestState.l !== null
+            || this.latestState.r !== null
+            || this.latestState.b !== null;
+
+        if(!has_state){
+            return;
+        }
+
+        const payload = JSON.stringify({
+            t: "update",
+            l: this.latestState.l,
+            r: this.latestState.r,
+            b: this.latestState.b
+        });
+
+        for(const client of this.clients){
+            if(client.slave === true){
+                continue;
+            }
+
+            const socket = client.socket;
+
+            if(!socket || socket.readyState !== 1){
+                continue;
+            }
+
+            try{
+                socket.send(payload);
+            }catch(err){
+                utils.log(`Broadcast fallito verso ${client.uuid} (${client.address}): ${err.message}`, "ERROR");
+            }
+        }
     }
 
     /**
