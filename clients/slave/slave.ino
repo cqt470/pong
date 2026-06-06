@@ -1,13 +1,13 @@
-#include "esp8226.h"
+#include "slave_esp8266.h"
 
-ESP8266 slave();
+Slave_ESP8266 slave;
 
 void setup(){
   Serial.begin(9600);
+  slave.setup();
 }
 
 void loop(){
-  Serial.println("Ciao");
 
-  delay((int) 1 / FPS * 1000);
+  delay(1000);
 }
