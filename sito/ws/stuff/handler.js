@@ -50,7 +50,14 @@ class Handler{
             return;
         }
 
-        const data = JSON.parse(incoming_data);
+        let data;
+
+        try{
+            data = JSON.parse(incoming_data);
+        }catch(err){
+            utils.log(`Messaggio non JSON da ${remote}: ${incoming_data}`, "WARN");
+            return;
+        }
         const type = data?.t;
 
         if(!type){
@@ -83,11 +90,14 @@ class Handler{
         const remote = utils.get_client_ip(req);
 
         utils.log(`Client connesso: ${remote}`, "INFO");
+        utils.log(`Upgrade path: ${req.url}`, "DEBUG");
+        utils.log(`Headers UA: ${req.headers["user-agent"] || "n/a"}`, "DEBUG");
 
         this.#send_random_data(ws, remote);
 
         ws.on("message", (data) => this.#handle_messages(data, ws, remote));
-        ws.on("close", () => this.#handle_closes(remote));
+        ws.on("close", (code, reason) => this.#handle_closes(`${remote} code=${code} reason=${reason?.toString?.() || ""}`));
+        ws.on("error", (err) => utils.log(`Errore WS da ${remote}: ${err.message}`, "ERROR"));
     }
 
     async #send_random_data(ws, remote){

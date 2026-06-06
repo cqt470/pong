@@ -8,6 +8,6 @@ void setup(){
 }
 
 void loop(){
-
-  delay(1000);
+  slave.run();
+  delay(10);
 }
