@@ -8,6 +8,34 @@ class Handler{
         /** class holds no per-connection state; clients tracked here */
         /** @type {Object[]} */
         this.clients = [];
+
+        this.heartbeatInterval = setInterval(() => {
+            for(const client of this.clients){
+                const socket = client.socket;
+
+                if(!socket){
+                    continue;
+                }
+
+                if(socket.isAlive === false){
+                    utils.log(`Heartbeat scaduto per ${client.uuid} (${client.address})`, "WARN");
+                    try{ socket.terminate(); }catch(e){}
+                    continue;
+                }
+
+                socket.isAlive = false;
+
+                try{
+                    socket.ping();
+                }catch(err){
+                    utils.log(`Impossibile pingare ${client.uuid} (${client.address}): ${err.message}`, "ERROR");
+                }
+            }
+        }, 15000);
+
+        if(typeof this.heartbeatInterval.unref === "function"){
+            this.heartbeatInterval.unref();
+        }
     }
 
     /**
@@ -27,14 +55,38 @@ class Handler{
         utils.log(`Client disconnesso: ${remote} (${reason})`, "INFO");
     }
 
-    #set_uuid(data, remote){
-        this.clients.push({
+    #set_uuid(data, ws, remote){
+        const next_client = {
             "uuid": data.uuid,
             "slave": data.slave === true,
-            "address": remote
-        });
+            "address": remote,
+            "socket": ws
+        };
 
-        console.log(this.clients);
+        const existing_index = this.clients.findIndex((client) => client.uuid === data.uuid);
+
+        if(existing_index >= 0){
+            this.clients[existing_index] = next_client;
+            utils.log(`Client uuid duplicato aggiornato: ${data.uuid} (${remote})`, "WARN");
+        }else{
+            this.clients.push(next_client);
+        }
+
+        console.log(this.clients.map(({uuid, slave, address}) => ({uuid, slave, address})));
+    }
+
+    #remove_client(ws, remote){
+        const uuid = ws?.uuid;
+        const before = this.clients.length;
+
+        if(uuid){
+            this.clients = this.clients.filter((client) => client.uuid !== uuid);
+        }else{
+            this.clients = this.clients.filter((client) => client.address !== remote);
+        }
+
+        const removed = before - this.clients.length;
+        utils.log(`Rimosso ${removed} client/i (${uuid || remote}). Rimasti: ${this.clients.length}`, "INFO");
     }
 
     #handle_messages(incoming_data, ws, remote){
@@ -74,14 +126,16 @@ class Handler{
             ws.isSlave = data.slave === true;
             ws.uuid = data.uuid;
             utils.log(`Client ${remote} registrato come ${ws.isSlave ? "slave" : "master"} (uuid=${data.uuid})`, "INFO");
-            this.#set_uuid(data, remote);
+            ws.isAlive = true;
+            this.#set_uuid(data, ws, remote);
         }
 
         utils.log(`Messaggio ricevuto: ${incoming_data}`, "INFO");
     }
 
-    #handle_closes(remote){
-        utils.log(`Client disconnesso: ${remote}`, "INFO");
+    #handle_closes(ws, remote, code, reason){
+        this.#remove_client(ws, remote);
+        utils.log(`Client disconnesso: ${remote} code=${code} reason=${reason}`, "INFO");
     }
 
     /**
@@ -95,6 +149,7 @@ class Handler{
 
         ws.isSlave = null;
         ws.uuid = null;
+        ws.isAlive = true;
 
         utils.log(`Client connesso: ${remote}`, "INFO");
         utils.log(`Upgrade path: ${req.url}`, "DEBUG");
@@ -103,7 +158,10 @@ class Handler{
         this.#send_random_data(ws, remote);
 
         ws.on("message", (data) => this.#handle_messages(data, ws, remote));
-        ws.on("close", (code, reason) => this.#handle_closes(`${remote} code=${code} reason=${reason?.toString?.() || ""}`));
+        ws.on("pong", () => {
+            ws.isAlive = true;
+        });
+        ws.on("close", (code, reason) => this.#handle_closes(ws, remote, code, reason?.toString?.() || ""));
         ws.on("error", (err) => utils.log(`Errore WS da ${remote}: ${err.message}`, "ERROR"));
     }
 
