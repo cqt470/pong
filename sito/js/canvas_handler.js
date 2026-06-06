@@ -20,6 +20,11 @@ class CanvasHandler{
         this.bar_offset = settings.bar_offset || 8;
         this.bar_height = settings.bar_height || 4;
         this.bar_width = settings.bar_width || 2;
+        this.state = {
+            l: null,
+            r: null,
+            b: null
+        };
 
         this.uuid = crypto.randomUUID();
         console.log(`Client UUID: ${this.uuid}`);
@@ -50,6 +55,22 @@ class CanvasHandler{
     fill(){
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(0, 0, this.sizex, this.sizey);
+    }
+
+    render(){
+        this.fill();
+
+        if(this.state.l !== null && this.state.l !== undefined){
+            this.draw_paddle(false, this.state.l);
+        }
+
+        if(this.state.r !== null && this.state.r !== undefined){
+            this.draw_paddle(true, this.state.r);
+        }
+
+        if(this.state.b && typeof this.state.b.x === "number" && typeof this.state.b.y === "number"){
+            this.draw_pixel(this.state.b.x, this.state.b.y, true);
+        }
     }
 
     /**
@@ -90,13 +111,29 @@ class CanvasHandler{
 
             console.log(`IN: ${event.data} (origin: ${event.origin})`);
 
-            const data = JSON.parse(event.data);
+            let data;
+
+            try{
+                data = JSON.parse(event.data);
+            }catch(err){
+                console.warn(`Messaggio WebSocket ignorato: ${event.data}`);
+                return;
+            }
 
             if(data.t == "update"){
-                this.fill();
-                this.draw_paddle(false, data.l);
-                this.draw_paddle(true, data.r);
-                this.draw_pixel(data.b.x, data.b.y, true);
+                if(data.l !== undefined){
+                    this.state.l = data.l;
+                }
+
+                if(data.r !== undefined){
+                    this.state.r = data.r;
+                }
+
+                if(data.b !== undefined){
+                    this.state.b = data.b;
+                }
+
+                this.render();
             }
         })
     }
