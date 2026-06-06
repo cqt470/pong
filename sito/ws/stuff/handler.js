@@ -128,6 +128,30 @@ class Handler{
             utils.log(`Client ${remote} registrato come ${ws.isSlave ? "slave" : "master"} (uuid=${data.uuid})`, "INFO");
             ws.isAlive = true;
             this.#set_uuid(data, ws, remote);
+            return;
+        }
+
+        if(type === "update" && ws.isSlave === true){
+            for(const client of this.clients){
+                if(client.slave === true){
+                    continue;
+                }
+
+                const socket = client.socket;
+
+                if(!socket || socket.readyState !== 1){
+                    continue;
+                }
+
+                try{
+                    socket.send(JSON.stringify(data));
+                }catch(err){
+                    utils.log(`Invio update fallito verso ${client.uuid} (${client.address}): ${err.message}`, "ERROR");
+                }
+            }
+
+            ws.isAlive = true;
+            return;
         }
 
         // utils.log(`Messaggio ricevuto: ${incoming_data}`, "DEBUG");
@@ -155,43 +179,12 @@ class Handler{
         utils.log(`Upgrade path: ${req.url}`, "DEBUG");
         utils.log(`Headers UA: ${req.headers["user-agent"] || "n/a"}`, "DEBUG");
 
-        this.#send_random_data(ws, remote);
-
         ws.on("message", (data) => this.#handle_messages(data, ws, remote));
         ws.on("pong", () => {
             ws.isAlive = true;
         });
         ws.on("close", (code, reason) => this.#handle_closes(ws, remote, code, reason?.toString?.() || ""));
         ws.on("error", (err) => utils.log(`Errore WS da ${remote}: ${err.message}`, "ERROR"));
-    }
-
-    async #send_random_data(ws, remote){
-        while(ws && ws.readyState === 1){
-            await utils.wait(1000 / 1); // 1 Hz
-
-            if(ws.isSlave !== false){
-                continue;
-            }
-
-            try{
-                const pos_left = Math.floor(Math.random() * 64);
-                const pos_right = Math.floor(Math.random() * 64);
-                const pos_ball = {
-                    x: Math.floor(Math.random() * 128),
-                    y: Math.floor(Math.random() * 64)
-                };
-
-                ws.send(JSON.stringify({
-                    "t": "update",
-                    "r": pos_right,
-                    "l": pos_left,
-                    "b": pos_ball
-                }));
-            }catch(err){
-                utils.log(`Errore invio dati a ${remote}: ${err.message}`, "ERROR");
-                break;
-            }
-        }
     }
 }
 
