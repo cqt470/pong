@@ -1,12 +1,14 @@
 #include "ESP8266WiFi.h"
 #include "WebSocketsClient.h"
 
-const char* ssid = "FibreBox_X6-347BB7_10";
-const char* password = "T9JY4U6CNMC6FMXNW7";
+const char* ssid = "wqdqwdq";
+const char* password = "qdwqdqw";
 
 const char* websocket_server = "192.168.1.101";
 const uint16_t websocket_port = 3040;
 const char* websocket_path = "/ws";
+
+bool websocket_connected = false;
 
 WebSocketsClient web_socket;
 
@@ -35,11 +37,13 @@ class Slave_ESP8266{
         case WStype_DISCONNECTED:
           Serial.println("[WSc] Disconnesso!");
           log_wifi_state("[WSc]");
+          websocket_connected = false;
           break;
           
         case WStype_CONNECTED:
           Serial.println("[WSc] Connesso!");
           log_wifi_state("[WSc]");
+          websocket_connected = true;
           // Invia l'identificativo nel formato atteso dal server
           {
             String uuid = "esp8266-";
@@ -73,6 +77,7 @@ class Slave_ESP8266{
         case WStype_ERROR:
           Serial.print("[WSc] Errore! length=");
           Serial.println(length);
+          websocket_connected = false;
           if(payload && length > 0){
             Serial.print("[WSc] Error payload: ");
             Serial.println((char*)payload);
