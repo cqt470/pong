@@ -14,6 +14,8 @@
 
 */
 
+import { Modal } from "./modules/modal.js";
+
 /**
  * @see https://stackoverflow.com/questions/39707836/draw-html5-canvas-on-console
  */
@@ -33,7 +35,7 @@ Discord: zerokelvin_000`);
 }
 
 class CanvasHandler{
-    #WS_URL;
+    #WS_URL; #modal;
 
     /**
      * La classe CanvasHandler si occupa di gestire il disegno sul canvas e la comunicazione con il server WebSocket.
@@ -63,9 +65,19 @@ class CanvasHandler{
         this.uuid = crypto.randomUUID();
         console.log(`Client UUID: ${this.uuid}`);
 
+        this.#modal = new Modal(document.querySelector(".canvas .content"));
+        this.#modal.create();
+
         const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
         const wsHost = window.location.host;
         this.#WS_URL = settings.ws_url || `${wsScheme}://${wsHost}/ws`;
+
+        this.#modal.set_content({
+            "title": "Connettendomi...",
+            "desc": `URL: ${this.#WS_URL}`
+        });
+
+        // this.#WS_URL = `ws`;
         /** @see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket */
         this.ws = new WebSocket(this.#WS_URL);
 
@@ -85,6 +97,10 @@ class CanvasHandler{
                 "t": "uuid",
                 "uuid": this.uuid
             }));
+
+            this.#modal.set_content({
+                "title": "Connesso",
+            });
         });
     }
 
