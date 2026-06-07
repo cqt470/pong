@@ -2,6 +2,7 @@ const { WebSocketServer } = require("ws");
 const { http } = require("http");
 const path = require("node:path");
 const { utils } = require("./utils");
+const { Ball } = require("./ball");
 
 class Handler{
     constructor(){
@@ -10,23 +11,12 @@ class Handler{
         this.latestState = {
             l: null,
             r: null,
-            b: {
-                "x": utils.random_number(16, 70, true),
-                "y": utils.random_number(4, 36, true)
-            }
+            b: null
         };
 
-        let ball_velocity = {
-            "x": utils.random_number(0, 1, true),
-            "y": utils.random_number(0, 1, true)
-        }
-
-        if(ball_velocity.x == 0) ball_velocity.x = -1;
-        if(ball_velocity.y == 0) ball_velocity.y = -1;
-        console.log(ball_velocity)
+        this.ball = new Ball();
 
         this.broadcastInterval = setInterval(() => {
-            this.#calculate_ball();
             this.#broadcast_state();
         }, 1000 / 24);
 
@@ -203,10 +193,6 @@ class Handler{
         utils.log(`Client disconnesso: ${remote} code=${code} reason=${reason}`, "INFO");
     }
 
-    #calculate_ball(){
-        return;
-    }
-
     #broadcast_state(){
         const has_state = this.latestState.l !== null
             || this.latestState.r !== null
@@ -217,6 +203,11 @@ class Handler{
             return;
         }
         */
+
+        if(this.latestState.l && this.latestState.r){
+            this.ball.update_position();
+            this.latestState.b = this.ball.position;
+        }
 
         const payload = JSON.stringify({
             t: "update",
