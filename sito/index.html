@@ -8,7 +8,7 @@
 </head>
 <body>
     <main>
-        <div class="canvas">
+        <div class="container">
             <nav>
                 <div class="title">
                     <h1>Progetto di Robotica</h1>
@@ -23,16 +23,20 @@
                     </a>
                 </div>
             </nav>
-            <canvas id="pong_canvas" width="512" height="256"></canvas>
+            <div class="canvas">
+                <canvas id="pong_canvas" width="512" height="256"></canvas>
+                <div class="overlay">
+                    <div class="content">
+                        <div class="modal">
+                            <p class="title">Aspettando i client...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <footer>
                 <p>Questo progetto è open-source e protetto dalla licenza GPL-2.0.</p>
             </footer>
         </div>
-        <!--
-        <h1>Test Websocket</h1>
-        <i>Questo progetto è open-source! <a href="https://github.com/cqt470/pong" target="_blank">Vedi il codice sorgente</a>.</i>
-        <i>&copy; 2026 0°K, cqt470. Tutti i diritti riservati.</i>
-        -->
     </main>
     <script type="module">
         import { CanvasHandler } from "./js/canvas_handler.js";
