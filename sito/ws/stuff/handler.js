@@ -5,16 +5,28 @@ const { utils } = require("./utils");
 
 class Handler{
     constructor(){
-        /** class holds no per-connection state; clients tracked here */
         /** @type {Object[]} */
         this.clients = [];
         this.latestState = {
             l: null,
             r: null,
-            b: null
+            b: {
+                "x": utils.random_number(16, 70, true),
+                "y": utils.random_number(4, 36, true)
+            }
         };
 
+        let ball_velocity = {
+            "x": utils.random_number(0, 1, true),
+            "y": utils.random_number(0, 1, true)
+        }
+
+        if(ball_velocity.x == 0) ball_velocity.x = -1;
+        if(ball_velocity.y == 0) ball_velocity.y = -1;
+        console.log(ball_velocity)
+
         this.broadcastInterval = setInterval(() => {
+            this.#calculate_ball();
             this.#broadcast_state();
         }, 1000 / 24);
 
@@ -189,6 +201,10 @@ class Handler{
     #handle_closes(ws, remote, code, reason){
         this.#remove_client(ws, remote);
         utils.log(`Client disconnesso: ${remote} code=${code} reason=${reason}`, "INFO");
+    }
+
+    #calculate_ball(){
+        return;
     }
 
     #broadcast_state(){

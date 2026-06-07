@@ -67,6 +67,19 @@ class Utils{
 
         return ip;
     }
+
+    /**
+     * Genera un numero casuale
+     * @param {number} from da che numero
+     * @param {number} to a che numero
+     * @param {bool} return_int ritorna un numero intero?
+     * @returns {number} Il numero generato
+     */
+    random_number(from, to, return_int){
+        const n = Math.random() * (to - from) + from;
+        
+        return return_int ? Math.round(n) : n;
+    }
 }
 
 const utils = new Utils();

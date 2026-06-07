@@ -174,13 +174,20 @@ class CanvasHandler{
             this.state.b = data.b;
         }
 
-        if(left && right){
+        if(left && right && ball){
             this.#modal.hide();
             this.render();
             return;
         }
 
         this.#modal.show();
+
+        if(!ball){
+            this.#modal.set_content({
+                "title": "Aspettando",
+                "desc": "Il server non ha calcolato la posizione della pallina"
+            });
+        }
 
         if(!left && !right){
             this.#modal.set_content({
