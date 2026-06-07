@@ -23,8 +23,8 @@ Una volta installato tutto, bisogna aprire il file [slave.ino](clients/slave/sla
 
 > Origine: [slave_esp8266.h](clients/slave/slave_esp8266.h) 
 ```C++
-const char* ssid = "FibreBox_X6-347BB7_10";
-const char* password = "T9JY4U6CNMC6FMXNW7";
+const char* ssid = "wifi_molto_conosciuto";
+const char* password = "password_super_segreta";
 ```
 
 Cambiare anche `IS_LEFT_PLR` a true o false, a dipendenza della posizione del giocatore (e quindi della racchetta/paddle).
