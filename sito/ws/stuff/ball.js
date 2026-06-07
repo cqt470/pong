@@ -15,13 +15,33 @@
 */
 
 const { utils } = require("./utils");
+const { Player } = require("./player");
 
 class Ball{
     /**
      * L'oggetto della pallina
+     * @param {Object} players I giocatori
+     * @param {Player} players.player_left Giocatore sinistra
+     * @param {Player} players.player_right Giocatore destra
      * @see ball.h
      */
-    constructor(){
+    constructor(players){
+        this.#randomize_ball();
+
+        this.display = {
+            "x": 85,
+            "y": 43,
+            "paddle_offset": 8,
+            "paddle_height": 8
+        }
+
+        this.players = {
+            "left": players.player_left,
+            "right": players.player_right,
+        }
+    }
+
+    #randomize_ball(){
         this.position = {
             "x": utils.random_number(16, 70, true),
             "y": utils.random_number(4, 36, true)
@@ -33,10 +53,17 @@ class Ball{
         }
         if(this.velocity.x == 0) this.velocity.x = -1;
         if(this.velocity.y == 0) this.velocity.y = -1;
+    }
 
-        this.display = {
-            "x": 86,
-            "y": 43,
+    #check_win_conditions(){
+        if(this.position.x < this.display.paddle_offset){
+            this.#randomize_ball();
+            this.players.right.score += 1;
+        }
+
+        if(this.position.x > (this.display.x - this.display.paddle_offset)){
+            this.#randomize_ball();
+            this.players.right.score += 1;
         }
     }
 
@@ -58,13 +85,17 @@ class Ball{
         }
     }
 
-    update_position(){
+    update_position(left_position, right_position){
+        this.players.left.position = left_position;
+        this.players.right.position = right_position;
+
+        this.#check_win_conditions();
         this.#check_margins();
 
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
 
-        utils.log(`${this.position.x}, ${this.position.y}`);
+        // utils.log(`${this.position.x}, ${this.position.y}`);
     }
 }
 

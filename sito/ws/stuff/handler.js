@@ -3,6 +3,7 @@ const { http } = require("http");
 const path = require("node:path");
 const { utils } = require("./utils");
 const { Ball } = require("./ball");
+const { Player } = require("./player");
 
 class Handler{
     constructor(){
@@ -14,7 +15,12 @@ class Handler{
             b: null
         };
 
-        this.ball = new Ball();
+        this.player_left = new Player();
+        this.player_right = new Player();
+        this.ball = new Ball({
+            "player_left": this.player_left,
+            "player_right": this.player_right,
+        });
 
         this.broadcastInterval = setInterval(() => {
             this.#broadcast_state();
@@ -205,7 +211,7 @@ class Handler{
         */
 
         if(this.latestState.l && this.latestState.r){
-            this.ball.update_position();
+            this.ball.update_position(this.latestState.l, this.latestState.r);
             this.latestState.b = this.ball.position;
         }
 
