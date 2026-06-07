@@ -55,6 +55,27 @@ class Ball{
         if(this.velocity.y == 0) this.velocity.y = -1;
     }
 
+    #check_single_bar_collisions(plr_x, plr_y, turn){
+        if(
+            this.position.x == plr_x &&
+            (this.position.y > plr_y && this.position.y < (plr_y + 12))
+        ){
+            this.velocity.x *= -1;
+
+            // true = sinistra, false = destra
+            if(turn){
+                this.players.left.score += 1;
+            }else{
+                this.players.right.score += 1;
+            }
+        }
+    }
+
+    #check_bar_collisions(){
+        this.#check_single_bar_collisions(this.display.paddle_offset, this.players.left.position, true);
+        this.#check_single_bar_collisions((this.display.x - this.display.paddle_offset), this.players.right.position, true);
+    }
+
     #check_win_conditions(){
         if(this.position.x < this.display.paddle_offset){
             this.#randomize_ball();
@@ -91,6 +112,7 @@ class Ball{
 
         this.#check_win_conditions();
         this.#check_margins();
+        this.#check_bar_collisions();
 
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;

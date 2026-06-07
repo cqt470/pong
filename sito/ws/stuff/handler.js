@@ -219,7 +219,7 @@ class Handler{
             t: "update",
             l: this.latestState.l,
             r: this.latestState.r,
-            b: this.latestState.b
+            b: this.latestState.b,
         });
 
         for(const client of this.clients){
