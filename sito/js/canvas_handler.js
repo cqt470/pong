@@ -160,20 +160,47 @@ class CanvasHandler{
     #handle_connections(data){
         if(data.t != "update") return;
 
-        if(data.l !== undefined){
+        const left = data?.l; const right = data?.r; const ball = data?.b;
+
+        if(left){
             this.state.l = data.l;
         }
 
-        if(data.r !== undefined){
+        if(right){
             this.state.r = data.r;
         }
 
-        if(data.b !== undefined){
+        if(ball){
             this.state.b = data.b;
         }
 
-        if(this.state.l && this.state.r && this.state.b){
-            this.render;
+        if(left && right){
+            this.#modal.hide();
+            this.render();
+            return;
+        }
+
+        this.#modal.show();
+
+        if(!left && !right){
+            this.#modal.set_content({
+                "title": "Aspettando",
+                "desc": "Nessuna delle due board è collegata"
+            })
+        }
+
+        if(left && !right){
+            this.#modal.set_content({
+                "title": "Aspettando",
+                "desc": "Solo la board sinistra è collegata"
+            })
+        }
+
+        if(!left && right){
+            this.#modal.set_content({
+                "title": "Aspettando",
+                "desc": "Solo la board destra è collegata"
+            })
         }
     }
 

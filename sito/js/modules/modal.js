@@ -52,7 +52,7 @@ class Modal{
     }
 
     /**
-     * 
+     * Imposta il contenuto del modal
      * @param {Object} data I dati da impostare
      * @param {string} data.title Il titolo del modal 
      * @param {string?} data.desc La descrizione del modal 
@@ -83,6 +83,22 @@ class Modal{
 
         title_p.textContent = title;
         title_p.style.display = "block";
+    }
+
+    /**
+     * Mostra il modal
+     * @returns nulla
+     */
+    show(){
+        this.#modal_div.style.display = "flex";
+    }
+
+    /**
+     * Nasconde il modal
+     * @returns nulla
+     */
+    hide(){
+        this.#modal_div.style.display = "none";
     }
 }
 

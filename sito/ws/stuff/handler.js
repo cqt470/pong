@@ -196,9 +196,11 @@ class Handler{
             || this.latestState.r !== null
             || this.latestState.b !== null;
 
+        /*
         if(!has_state){
             return;
         }
+        */
 
         const payload = JSON.stringify({
             t: "update",
@@ -213,7 +215,6 @@ class Handler{
             }
 
             const socket = client.socket;
-
             if(!socket || socket.readyState !== 1){
                 continue;
             }
