@@ -141,6 +141,26 @@ class CanvasHandler{
         }
     }
 
+    #handle_connections(data){
+        if(data.t != "update") return;
+
+        if(data.l !== undefined){
+            this.state.l = data.l;
+        }
+
+        if(data.r !== undefined){
+            this.state.r = data.r;
+        }
+
+        if(data.b !== undefined){
+            this.state.b = data.b;
+        }
+
+        if(this.state.l && this.state.r && this.state.b){
+            this.render;
+        }
+    }
+
     listen(){
         this.ws.addEventListener("message", (event) => {
             if(event.target != this.ws) return;
@@ -156,21 +176,7 @@ class CanvasHandler{
                 return;
             }
 
-            if(data.t == "update"){
-                if(data.l !== undefined){
-                    this.state.l = data.l;
-                }
-
-                if(data.r !== undefined){
-                    this.state.r = data.r;
-                }
-
-                if(data.b !== undefined){
-                    this.state.b = data.b;
-                }
-
-                this.render();
-            }
+            this.#handle_connections(data);
         })
     }
 }
