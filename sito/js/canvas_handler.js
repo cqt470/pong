@@ -84,7 +84,7 @@ class CanvasHandler{
         this.#WS_URL = settings.ws_url || `${wsScheme}://${wsHost}/ws`;
 
         this.#modal.set_content({
-            "title": "Connettendomi...",
+            "title": "Mi sto connettendo...",
             "desc": `URL: ${this.#WS_URL}`
         });
 
@@ -180,8 +180,18 @@ class CanvasHandler{
         }
     }
 
-    #handle_connections(data){
-        if(data.t != "update") return;
+    #ask_usernames(){
+        this.#modal.set_content({
+            "title": "Dati giocatori",
+            "desc": "Imposta il nome utente del giocatore a sinistra"
+        })
+
+        this.#modal.button_handler.add_button({
+            "label": "Invia",
+        }).create().show();
+    }
+
+    #handle_game_update(){
 
         const left = data?.l; const right = data?.r; const ball = data?.b;
 
@@ -232,6 +242,13 @@ class CanvasHandler{
                 "desc": "Solo la board destra è collegata"
             })
         }
+    }
+
+    #handle_connections(data){
+        if(data.t == "ask") this.#ask_usernames();
+        if(data.t == "update") this.#ask_usernames();
+
+        return
     }
 
     listen(){

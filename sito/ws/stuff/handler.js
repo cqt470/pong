@@ -57,6 +57,8 @@ class Handler{
         if(typeof this.broadcastInterval.unref === "function"){
             this.broadcastInterval.unref();
         }
+
+        this.usernames = null;
     }
 
     /**
@@ -200,6 +202,8 @@ class Handler{
     }
 
     #broadcast_state(){
+        if(!this.usernames) return;
+
         const has_state = this.latestState.l !== null
             || this.latestState.r !== null
             || this.latestState.b !== null;
@@ -257,6 +261,8 @@ class Handler{
         utils.log(`Client connesso: ${remote}`, "INFO");
         utils.log(`Upgrade path: ${req.url}`, "DEBUG");
         utils.log(`Headers UA: ${req.headers["user-agent"] || "n/a"}`, "DEBUG");
+
+        ws.send(JSON.stringify({"t": "ask", "d": "usernames"}));
 
         ws.on("message", (data) => this.#handle_messages(data, ws, remote));
         ws.on("pong", () => {
