@@ -19,6 +19,8 @@
  * @typedef {Object} ButtonElement
  * @property {string} label Il testo da mostrare
  * @property {string} color Il colore da mostrare sul bordo e sul fill. Default: #0059ff
+ * @property {() => string|number|null} [action] Cosa fare al click, opzionale
+ * @see https://stackoverflow.com/questions/44146018/jsdoc-how-to-assign-a-function-as-a-property-of-another-function
  */
 
 class ButtonHandler{
@@ -54,9 +56,15 @@ class ButtonHandler{
             return;
         }
 
-        if(!button.color){
+        if(!button?.color){
             console.log("Colore bottone assente, defaulting a #0059ff");
             button.color = "#0059ff";
+        }
+
+        if(!button?.action){
+            button.action = function(){
+                return;
+            }
         }
 
         this.#button_grid.push(button);
@@ -77,6 +85,8 @@ class ButtonHandler{
             button.classList.add("btn");
             button.innerText = btn.label;
             button.style.borderColor = btn.color;
+            
+            button.addEventListener("click", btn.action);
             
             btn_grid.append(button);
         })

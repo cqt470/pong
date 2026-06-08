@@ -81,7 +81,10 @@ class CanvasHandler{
         this.ws = new WebSocket(this.#WS_URL);
         this.ws.addEventListener("error", (e) => {
             this.#modal.button_handler.add_button({
-                "label": "Ricarica la pagina"
+                "label": "Ricarica la pagina",
+                "action": function(){
+                    window.location.reload();
+                }
             }).create().show();
 
             this.#modal.set_content({
