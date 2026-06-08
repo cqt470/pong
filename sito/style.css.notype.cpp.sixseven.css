@@ -7,6 +7,8 @@
 
 :root{
     --primary-color: #0059ff;
+    --error-color: #e43500;
+    --success-color: #22cc55;
     --background-filler: #eee;
     --canvas-background: #fff;
 }
