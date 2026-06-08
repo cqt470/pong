@@ -26,7 +26,8 @@ class ButtonHandler{
      * @type {HTMLDivElement?}
      */
     #button_grid_element;
-    #parent_element; #button_grid;
+    #button_grid;
+    #parent_element;
 
     /**
      * Gestisce i modal nella pagina
@@ -64,18 +65,18 @@ class ButtonHandler{
 
     /**
      * Crea l'elemento della griglia di bottoni
-     * @returns nulla
+     * @returns {ButtonHandler} L'oggetto in esecuzione
      */
     create(){
         const btn_grid = document.createElement("div");
         btn_grid.classList.add("buttons");
+        btn_grid.style.display = "none";
 
         this.#button_grid.forEach((btn) => {
             const button = document.createElement("button");
             button.classList.add("btn");
             button.innerText = btn.label;
             button.style.borderColor = btn.color;
-            // button.style.display = "none";
             
             btn_grid.append(button);
         })
@@ -83,10 +84,12 @@ class ButtonHandler{
         this.#parent_element.append(btn_grid);
 
         this.#button_grid_element = btn_grid;
+
+        return this;
     }
 
     show(){
-
+        this.#button_grid_element.style.display = "block";
     }
 }
 

@@ -111,5 +111,23 @@ main{
         & footer{
             font-style: italic;
         }
+
+        & .btn{
+            padding: 8px 16px;
+            border-radius: 16px;
+            outline: none;
+            border: 1px solid;
+            cursor: pointer;
+
+            &:hover{
+                border: 2px solid;
+                padding: 7px 15px;
+            }
+
+            &:active{
+                border: 3px solid;
+                padding: 6px 14px;
+            }
+        }
     }
 }

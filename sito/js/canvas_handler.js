@@ -81,8 +81,8 @@ class CanvasHandler{
         this.ws = new WebSocket(this.#WS_URL);
         this.ws.addEventListener("error", (e) => {
             this.#modal.button_handler.add_button({
-                "label": "Riprova"
-            }).create();
+                "label": "Ricarica la pagina"
+            }).create().show();
 
             this.#modal.set_content({
                 "title": "Ops, errore :(",
