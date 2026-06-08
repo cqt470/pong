@@ -34,6 +34,17 @@ https://github.com/cqt470/pong
 Discord: zerokelvin_000`);
 }
 
+class Score{
+    /**
+     * @type {HTMLDivElement}
+     */
+    #element;
+
+    constructor(element){
+
+    }
+}
+
 class CanvasHandler{
     #WS_URL; #modal;
 
