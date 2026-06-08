@@ -77,9 +77,14 @@ class CanvasHandler{
             "desc": `URL: ${this.#WS_URL}`
         });
 
-        // this.#WS_URL = `ws`;
         /** @see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket */
         this.ws = new WebSocket(this.#WS_URL);
+        this.ws.addEventListener("error", (e) => {
+            this.#modal.set_content({
+                "title": "Ops, errore :(",
+                "desc": "C'è stato un errore. Apri la console per sviluppatori oppure usa la sezione Network per capire di più."
+            })
+        })
 
         console.log(`WebSocket URL: ${this.#WS_URL}`);
         
