@@ -93,6 +93,6 @@ Notare che il progetto è ancora in `FASE DI SVILUPPO`. Pertanto, non esiste un 
 Questo progetto è distribuito sotto la licenza GPL-2.0. Per maggiori informazioni, contattarmi via email a `questions@zexa.ch` oppure su Discord all'username `zerokelvin-000`.
 
 ## Altro
-Versione: `v0.2-beta`
+Versione: `v0.2-stable`
 
 *Questo è un progetto scolastico e potrebbe smettere di ricevere aggiornamenti in qualsiasi momento.*
