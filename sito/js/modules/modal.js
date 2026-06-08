@@ -14,6 +14,8 @@
 
 */
 
+import { ButtonHandler } from "./buttons.js";
+
 class Modal{
     #parent_element;
     /**
@@ -49,6 +51,7 @@ class Modal{
         this.#parent_element.append(modal_div);
 
         this.#modal_div = modal_div;
+        this.button_handler = new ButtonHandler(modal_div);
     }
 
     /**
