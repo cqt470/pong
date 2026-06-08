@@ -67,7 +67,6 @@ class CanvasHandler{
 
         this.#modal = new Modal(document.querySelector(".canvas .content"));
         this.#modal.create();
-        this.#modal.button_handler.create();
 
         const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
         const wsHost = window.location.host;
@@ -81,7 +80,10 @@ class CanvasHandler{
         /** @see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket */
         this.ws = new WebSocket(this.#WS_URL);
         this.ws.addEventListener("error", (e) => {
-            this.#modal.button_handler;
+            this.#modal.button_handler.add_button({
+                "label": "Riprova"
+            }).create();
+
             this.#modal.set_content({
                 "title": "Ops, errore :(",
                 "desc": "C'è stato un errore. Apri la console per sviluppatori oppure usa la sezione Network per capire di più."

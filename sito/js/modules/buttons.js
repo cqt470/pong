@@ -22,6 +22,10 @@
  */
 
 class ButtonHandler{
+    /**
+     * @type {HTMLDivElement?}
+     */
+    #button_grid_element;
     #parent_element; #button_grid;
 
     /**
@@ -35,20 +39,27 @@ class ButtonHandler{
 
     /**
      * Aggiunge un bottone alla lista
-     * @param {ButtonElement} button 
+     * @param {ButtonElement} button Il bottone
+     * @returns {ButtonHandler} L'oggetto in esecuzione
      */
     add_button(button){
+        if(!button){
+            console.warn("Oggetto assente");
+            return;
+        }
+
         if(!button?.label){
             console.warn("Label assente");
             return;
         }
 
         if(!button.color){
-            console.warn("Colore assente, defaulting a #0059ff");
+            console.log("Colore bottone assente, defaulting a #0059ff");
             button.color = "#0059ff";
         }
 
         this.#button_grid.push(button);
+        return this;
     }
 
     /**
@@ -56,7 +67,26 @@ class ButtonHandler{
      * @returns nulla
      */
     create(){
-        console.log("ciao")
+        const btn_grid = document.createElement("div");
+        btn_grid.classList.add("buttons");
+
+        this.#button_grid.forEach((btn) => {
+            const button = document.createElement("button");
+            button.classList.add("btn");
+            button.innerText = btn.label;
+            button.style.borderColor = btn.color;
+            // button.style.display = "none";
+            
+            btn_grid.append(button);
+        })
+
+        this.#parent_element.append(btn_grid);
+
+        this.#button_grid_element = btn_grid;
+    }
+
+    show(){
+
     }
 }
 
