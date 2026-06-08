@@ -56,24 +56,44 @@ class Ball{
     }
 
     #check_single_bar_collisions(plr_x, plr_y, turn){
-        if(
-            this.position.x == plr_x &&
-            (this.position.y > plr_y && this.position.y < (plr_y + 12))
-        ){
-            this.velocity.x *= -1;
+        // check collisione
+        if(turn){
+            if(
+                this.position.x == plr_x &&
+                (this.position.y > plr_y && this.position.y < (plr_y + 12))
+            ){
+                this.velocity.x *= -1;
+            }
+        }else{
+            if(
+                this.position.x == plr_x &&
+                (this.position.y > plr_y && this.position.y < (plr_y + 12))
+            ){
+                this.velocity.x *= -1;
+            }
+        }
 
-            // true = sinistra, false = destra
-            if(turn){
-                this.players.left.score += 1;
-            }else{
+        // check punteggio
+        if(turn){
+            if(
+                this.position.x < plr_x &&
+                (this.position.y > plr_y && this.position.y < (plr_y + 12))
+            ){
                 this.players.right.score += 1;
+            }
+        }else{
+            if(
+                this.position.x > plr_x &&
+                (this.position.y > plr_y && this.position.y < (plr_y + 12))
+            ){
+                this.players.left.score += 1;
             }
         }
     }
 
     #check_bar_collisions(){
         this.#check_single_bar_collisions(this.display.paddle_offset, this.players.left.position, true);
-        this.#check_single_bar_collisions((this.display.x - this.display.paddle_offset), this.players.right.position, true);
+        this.#check_single_bar_collisions((this.display.x - this.display.paddle_offset), this.players.right.position, false);
     }
 
     #check_win_conditions(){
@@ -84,7 +104,7 @@ class Ball{
 
         if(this.position.x > (this.display.x - this.display.paddle_offset)){
             this.#randomize_ball();
-            this.players.right.score += 1;
+            this.players.left.score += 1;
         }
     }
 
@@ -118,6 +138,10 @@ class Ball{
         this.position.y += this.velocity.y;
 
         // utils.log(`${this.position.x}, ${this.position.y}`);
+    }
+
+    get_scores(){
+        return {"l": this.players.left.score, "r": this.players.right.score}
     }
 }
 

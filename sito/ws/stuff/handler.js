@@ -220,6 +220,7 @@ class Handler{
             l: this.latestState.l,
             r: this.latestState.r,
             b: this.latestState.b,
+            s: this.ball.get_scores()
         });
 
         for(const client of this.clients){
