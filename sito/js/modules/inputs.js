@@ -20,6 +20,7 @@
  * @property {string} label Il testo da mostrare
  * @property {string} color Il colore da mostrare sul bordo e sul fill. Default: #0059ff
  * @property {"text"} type Il tipo di input
+ * @property {string} placeholder Il placeholder
  */
 
 class InputHandler{
@@ -66,6 +67,11 @@ class InputHandler{
             }
         }
 
+        if(!input.placeholder){
+            console.log("Placeholder assente, defaulting a \"Scrivi qualcosa\"");
+            input.placeholder = "Scrivi qualcosa"
+        }
+
         this.#input_grid.push(input);
         return this;
     }
@@ -75,24 +81,25 @@ class InputHandler{
      * @returns {InputHandler} L'oggetto in esecuzione
      */
     create(){
-        const btn_grid = document.createElement("div");
-        btn_grid.classList.add("inputs");
-        btn_grid.style.display = "none";
+        const input_grid = document.createElement("div");
+        input_grid.classList.add("inputs");
+        input_grid.style.display = "none";
 
-        this.#input_grid.forEach((btn) => {
+        this.#input_grid.forEach((inp) => {
             const input = document.createElement("input");
-            input.classList.add("btn");
-            input.innerText = btn.label;
-            input.style.borderColor = btn.color;
+            input.classList.add("input");
+            input.innerText = inp.label;
+            input.style.borderColor = inp.color;
+            input.placeholder = inp.placeholder;
             
-            input.addEventListener("click", btn.action);
+            input.addEventListener("click", inp.action);
             
-            btn_grid.append(input);
+            input_grid.append(input);
         })
 
-        this.#parent_element.append(btn_grid);
+        this.#parent_element.append(input_grid);
 
-        this.#input_grid_element = btn_grid;
+        this.#input_grid_element = input_grid;
 
         return this;
     }

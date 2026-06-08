@@ -41,7 +41,7 @@ class Score{
     #element;
 
     constructor(element){
-
+        // todo
     }
 }
 
@@ -185,6 +185,11 @@ class CanvasHandler{
             "title": "Dati giocatori",
             "desc": "Imposta il nome utente del giocatore a sinistra"
         })
+
+        this.#modal.input_handler.add_input({
+            "label": "ciao",
+            
+        }).create().show();
 
         this.#modal.button_handler.add_button({
             "label": "Invia",
