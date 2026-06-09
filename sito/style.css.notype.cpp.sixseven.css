@@ -9,6 +9,7 @@
     --primary-color: #0059ff;
     --error-color: #e43500;
     --success-color: #22cc55;
+    --secondary-color: #999;
     --background-filler: #eee;
     --canvas-background: #fff;
 }
@@ -122,12 +123,13 @@ main{
             font-style: italic;
         }
 
-        & .btn{
+        & .btn, & .input{
             padding: 8px 16px;
             border-radius: 16px;
             outline: none;
             border: 1px solid;
             cursor: pointer;
+            background: var(--canvas-background);
 
             &:hover{
                 border: 2px solid;
@@ -137,6 +139,22 @@ main{
             &:active{
                 border: 3px solid;
                 padding: 6px 14px;
+            }
+        }
+
+        & .inputs{
+            display: flex;
+            gap: 16px;
+
+            & .input{
+                border-radius: 8px;
+                cursor: text;
+                width: 100%;
+
+                &:focus{
+                    border: 3px solid;
+                    padding: 6px 14px;
+                }
             }
         }
     }
