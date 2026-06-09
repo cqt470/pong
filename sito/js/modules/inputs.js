@@ -17,10 +17,10 @@
 /**
  * Elemento bottone
  * @typedef {Object} InputElement
- * @property {string} label Il testo da mostrare
  * @property {string} color Il colore da mostrare sul bordo e sul fill. Default: #0059ff
  * @property {"text"} type Il tipo di input
  * @property {string} placeholder Il placeholder
+ * @property {string} id L'id
  */
 
 class InputHandler{
@@ -51,13 +51,8 @@ class InputHandler{
             return;
         }
 
-        if(!input?.label){
-            console.warn("Label assente");
-            return;
-        }
-
         if(!input?.color){
-            console.log("Colore bottone assente, defaulting a #0059ff");
+            console.log("Colore input assente, defaulting a #0059ff");
             input.color = "#0059ff";
         }
 
@@ -70,6 +65,10 @@ class InputHandler{
         if(!input.placeholder){
             console.log("Placeholder assente, defaulting a \"Scrivi qualcosa\"");
             input.placeholder = "Scrivi qualcosa"
+        }
+        if(!input.id){
+            console.warn("ID assente");
+            return;
         }
 
         this.#input_grid.push(input);
@@ -91,6 +90,7 @@ class InputHandler{
             input.innerText = inp.label;
             input.style.borderColor = inp.color;
             input.placeholder = inp.placeholder;
+            input.id = inp.id;
             
             input.addEventListener("click", inp.action);
             
@@ -105,7 +105,7 @@ class InputHandler{
     }
 
     show(){
-        this.#input_grid_element.style.display = "block";
+        this.#input_grid_element.style.display = "flex";
     }
 }
 
