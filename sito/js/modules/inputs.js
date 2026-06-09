@@ -20,7 +20,7 @@
  * @property {string} color Il colore da mostrare sul bordo e sul fill. Default: #0059ff
  * @property {"text"} type Il tipo di input
  * @property {string} placeholder Il placeholder
- * @property {string} id L'id 
+ * @property {string} id L'id
  */
 
 class InputHandler{
