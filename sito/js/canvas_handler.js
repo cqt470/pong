@@ -186,6 +186,8 @@ class CanvasHandler{
         // riferimento
         const this_obj = this;
 
+        if(this.usernames.u1 && this.usernames.u2) return;
+
         this.#modal.set_content({
             "title": "Dati giocatori",
             "desc": "Imposta il nome utente dei due giocatori"
@@ -211,20 +213,21 @@ class CanvasHandler{
                 if(u1 == u2) return;
                 
                 const data = {"u1": u1, "u2": u2};
-
-                this_obj.ws.send(JSON.stringify({
+                const payload = JSON.stringify({
                     "t": "reply",
                     "q": "usernames",
                     "d": data
-                }));
+                });
 
+                this_obj.ws.send(payload);
                 this_obj.usernames = data;
-                console.log(`Giocatori registrati: "${data.u1}" e "${data.u2}"`);
+
+                console.log(`OUT: ${payload} (origin: ${event.origin})`);
             }
         }).create().show();
     }
 
-    #handle_game_update(){
+    #handle_game_update(data){
         const left = data?.l; const right = data?.r; const ball = data?.b;
 
         if(left){
@@ -245,7 +248,12 @@ class CanvasHandler{
             return;
         }
 
-        this.#modal.show();
+        if(left && right && ball){
+            this.#modal.show();
+        }
+
+        this.#modal.button_handler.hide();
+        this.#modal.input_handler.hide();
 
         if(!ball){
             this.#modal.set_content({
@@ -278,7 +286,7 @@ class CanvasHandler{
 
     #handle_connections(data){
         if(data.t == "ask") this.#ask_usernames();
-        if(data.t == "update") this.#ask_usernames();
+        if(data.t == "update") this.#handle_game_update(data);
 
         return
     }

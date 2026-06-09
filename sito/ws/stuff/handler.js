@@ -193,6 +193,30 @@ class Handler{
             return;
         }
 
+        if(type === "reply"){
+            const question = data?.q;
+
+            if(!question){
+                ws.send(JSON.stringify({
+                    "t": "error",
+                    "message": "Risposta priva di riferimento alla domanda"
+                }));
+                this.#disconnect_client(ws, remote, 1003, "Risposta priva di riferimento alla domanda");
+                return;
+            }
+
+            if(question == "usernames"){
+                if(this.usernames) return;
+
+                const u1 = data?.d?.u1; const u2 = data?.d?.u2;
+
+                if(!u1 || !u2 || (u1 == u2)) return;
+
+                this.usernames = {"left": u1, "right": u2};
+                utils.log(`Utenti registrati: "${u1}" e "${u2}"`, "NOTICE");
+            }
+        }
+
         // utils.log(`Messaggio ricevuto: ${incoming_data}`, "DEBUG");
     }
 
@@ -262,7 +286,9 @@ class Handler{
         utils.log(`Upgrade path: ${req.url}`, "DEBUG");
         utils.log(`Headers UA: ${req.headers["user-agent"] || "n/a"}`, "DEBUG");
 
-        ws.send(JSON.stringify({"t": "ask", "d": "usernames"}));
+        if(!this.usernames){
+            ws.send(JSON.stringify({"t": "ask", "d": "usernames"}));
+        }
 
         ws.on("message", (data) => this.#handle_messages(data, ws, remote));
         ws.on("pong", () => {

@@ -105,7 +105,17 @@ class InputHandler{
     }
 
     show(){
+        if(!this.#input_grid_element) return;
         this.#input_grid_element.style.display = "flex";
+    }
+
+    hide(){
+        if(!this.#input_grid_element) return;
+        this.#input_grid_element.style.display = "none";
+    }
+
+    reset(){
+        this.#input_grid = [];
     }
 }
 

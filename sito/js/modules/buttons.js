@@ -99,7 +99,17 @@ class ButtonHandler{
     }
 
     show(){
+        if(!this.#button_grid_element) return;
         this.#button_grid_element.style.display = "block";
+    }
+
+    hide(){
+        if(!this.#button_grid_element) return;
+        this.#button_grid_element.style.display = "none";
+    }
+
+    reset(){
+        this.#button_grid = [];
     }
 }
 
