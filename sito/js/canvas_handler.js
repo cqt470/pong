@@ -83,6 +83,8 @@ class CanvasHandler{
         const wsHost = window.location.host;
         this.#WS_URL = settings.ws_url || `${wsScheme}://${wsHost}/ws`;
 
+        this.usernames = {"u1": null, "u2": null};
+
         this.#modal.set_content({
             "title": "Mi sto connettendo...",
             "desc": `URL: ${this.#WS_URL}`
@@ -181,23 +183,48 @@ class CanvasHandler{
     }
 
     #ask_usernames(){
+        // riferimento
+        const this_obj = this;
+
         this.#modal.set_content({
             "title": "Dati giocatori",
-            "desc": "Imposta il nome utente del giocatore a sinistra"
+            "desc": "Imposta il nome utente dei due giocatori"
         })
 
         this.#modal.input_handler.add_input({
-            "label": "ciao",
-            
+            "placeholder": "Giocatore a sinistra",
+            "id": "username-left",
+            "color": "var(--secondary-color)"
+        }).add_input({
+            "placeholder": "Giocatore a destra",
+            "id": "username-right",
+            "color": "var(--secondary-color)"
         }).create().show();
-
+        
         this.#modal.button_handler.add_button({
             "label": "Invia",
+            "action": function(){
+                const u1 = document.getElementById("username-left")?.value;
+                const u2 = document.getElementById("username-right")?.value;
+
+                if(u1.length == 0 || u2.length == 0) return;
+                if(u1 == u2) return;
+                
+                const data = {"u1": u1, "u2": u2};
+
+                this_obj.ws.send(JSON.stringify({
+                    "t": "reply",
+                    "q": "usernames",
+                    "d": data
+                }));
+
+                this_obj.usernames = data;
+                console.log(`Giocatori registrati: "${data.u1}" e "${data.u2}"`);
+            }
         }).create().show();
     }
 
     #handle_game_update(){
-
         const left = data?.l; const right = data?.r; const ball = data?.b;
 
         if(left){
