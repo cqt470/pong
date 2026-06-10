@@ -287,6 +287,17 @@ class CanvasHandler{
     #handle_connections(data){
         if(data.t == "ask") this.#ask_usernames();
         if(data.t == "update") this.#handle_game_update(data);
+        if(data.t == "reply" && (!this.usernames.u1 && !this.usernames.u2)){
+            const question = data?.q;
+
+            if(!question) return;
+
+            if(question == "usernames"){
+                const u1 = data.d.u1; const u2 = data.d.u2;
+
+                this.usernames.u1 = u1; this.usernames.u2 = u2;
+            }
+        }
 
         return
     }

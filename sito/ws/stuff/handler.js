@@ -220,6 +220,10 @@ class Handler{
         // utils.log(`Messaggio ricevuto: ${incoming_data}`, "DEBUG");
     }
 
+    #send_usernames(){
+        
+    }
+
     #handle_closes(ws, remote, code, reason){
         this.#remove_client(ws, remote);
         utils.log(`Client disconnesso: ${remote} code=${code} reason=${reason}`, "INFO");
@@ -288,6 +292,11 @@ class Handler{
 
         if(!this.usernames){
             ws.send(JSON.stringify({"t": "ask", "d": "usernames"}));
+        }else{
+            ws.send(JSON.stringify({"t": "reply", "q": "usernames", "d": {
+                "u1": this.usernames.left,
+                "u2": this.usernames.right
+            }}))
         }
 
         ws.on("message", (data) => this.#handle_messages(data, ws, remote));
