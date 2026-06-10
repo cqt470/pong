@@ -12,6 +12,7 @@
     --secondary-color: #999;
     --background-filler: #eee;
     --canvas-background: #fff;
+    --overlay-color: #92929244;
 }
 
 body{
@@ -27,7 +28,7 @@ main{
     width: 100vw;
     height: 100vh;
     text-align: center;
-    background: var(--background-filler);
+    background: var(--overlay-color);
 
     .container{
         padding: 92px;
@@ -104,7 +105,7 @@ main{
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: #92929244;
+                background: var(--overlay-color);
                 border-radius: 32px;
 
                 & .content{
