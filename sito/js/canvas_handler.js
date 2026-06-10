@@ -15,6 +15,7 @@
 */
 
 import { Modal } from "./modules/modal.js";
+import { Score } from "./modules/score.js";
 
 /**
  * @see https://stackoverflow.com/questions/39707836/draw-html5-canvas-on-console
@@ -34,19 +35,8 @@ https://github.com/cqt470/pong
 Discord: zerokelvin_000`);
 }
 
-class Score{
-    /**
-     * @type {HTMLDivElement}
-     */
-    #element;
-
-    constructor(element){
-        // todo
-    }
-}
-
 class CanvasHandler{
-    #WS_URL; #modal;
+    #WS_URL; #modal; #score;
 
     /**
      * La classe CanvasHandler si occupa di gestire il disegno sul canvas e la comunicazione con il server WebSocket.
@@ -78,6 +68,8 @@ class CanvasHandler{
 
         this.#modal = new Modal(document.querySelector(".canvas .content"));
         this.#modal.create();
+
+        this.#score = new Score(document.querySelector(".score"));
 
         const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
         const wsHost = window.location.host;
@@ -227,8 +219,21 @@ class CanvasHandler{
         }).create().show();
     }
 
+    #set_score(){
+        if(!this.usernames.u1 || !this.usernames.u2) return;
+
+        this.#score.set({
+            "left": {
+                "username": this.usernames.u1,
+            },
+            "right": {
+                "username": this.usernames.u2
+            }
+        }).show();
+    }
+
     #handle_game_update(data){
-        const left = data?.l; const right = data?.r; const ball = data?.b;
+        const left = data?.l; const right = data?.r; const ball = data?.b; const scores = data?.s
 
         if(left){
             this.state.l = data.l;
@@ -242,14 +247,19 @@ class CanvasHandler{
             this.state.b = data.b;
         }
 
+        if(scores){
+            this.#score.scores = {
+                "left": scores.l,
+                "right": scores.r
+            }
+        }
+
+        this.#set_score();
+
         if(left && right && ball){
             this.#modal.hide();
             this.render();
             return;
-        }
-
-        if(left && right && ball){
-            this.#modal.show();
         }
 
         this.#modal.button_handler.hide();
