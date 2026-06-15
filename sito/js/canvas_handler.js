@@ -108,6 +108,12 @@ class CanvasHandler{
         this.listen();
     }
 
+    draw_center_line(){
+        this.ctx.fillStyle = "white";
+
+        this.ctx.fillRect(this.sizex / 2, 0, 2, this.sizey);
+    }
+
     send_uuid(){
         this.ws.addEventListener("open", () => {
             this.ws.send(JSON.stringify({
@@ -128,6 +134,7 @@ class CanvasHandler{
 
     render(){
         this.fill();
+        this.draw_center_line();
 
         if(this.state.l !== null && this.state.l !== undefined){
             this.draw_paddle(false, this.state.l);
